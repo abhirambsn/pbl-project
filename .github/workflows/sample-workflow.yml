@@ -1,0 +1,7 @@
+name: Github Sample Workflow
+on: [push]
+jobs:
+  test-script:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Test Success"
