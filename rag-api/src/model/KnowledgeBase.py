@@ -8,3 +8,5 @@ class KnowledgeBase(Base):
     name = Column(String, nullable=False)
     slug = Column(String, nullable=False, unique=True, index=True)
     files = Column(ARRAY(String))
+    createdBy = Column(String, nullable=False, unique=True)
+    isPrivate = Column(Boolean, default=False, nullable=False)

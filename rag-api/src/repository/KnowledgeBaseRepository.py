@@ -33,11 +33,23 @@ class KnowledgeBaseRepository:
         return kb
     
     def findAll(self, skip: int = 0, limit: int = 10):
-        kbs = self.db.query(KnowledgeBase).offset(skip).limit(limit).all()
+        kbs = self.db.query(KnowledgeBase).filter(KnowledgeBase.isPrivate == False).offset(skip).limit(limit).all()
 
         for kb_idx in range(len(kbs)):
             kbs[kb_idx].files = self._build_filepath_from_ids(kbs[kb_idx].files)
         return kbs
+    
+    def findKnowledgeBasesByUser(self, user_id: str, skip: int = 0, limit: int = 10, is_self: str = False):
+        if is_self:
+            kbs = self.db.query(KnowledgeBase).filter(KnowledgeBase.createdBy == user_id).offset(skip).limit(limit).all()
+            for kb_idx in range(len(kbs)):
+                kbs[kb_idx].files = self._build_filepath_from_ids(kbs[kb_idx].files)
+            return kbs
+        else:
+            kbs = self.db.query(KnowledgeBase).filter(KnowledgeBase.createdBy == user_id, KnowledgeBase.isPrivate == False).offset(skip).limit(limit).all()
+            for kb_idx in range(len(kbs)):
+                kbs[kb_idx].files = self._build_filepath_from_ids(kbs[kb_idx].files)
+            return kbs
     
     
 
