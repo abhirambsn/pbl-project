@@ -6,6 +6,18 @@ services:
     env_file:
       - ./.env.dev
   
+  mongodb:
+    image: mongo:latest
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=rag
+    ports:
+      - "27017:27017"
+  
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.6
     command: start
@@ -27,3 +39,6 @@ services:
     restart: always
     depends_on:
       - postgres
+
+volumes:
+  mongo_data:

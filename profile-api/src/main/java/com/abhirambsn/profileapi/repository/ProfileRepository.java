@@ -1,8 +1,8 @@
 package com.abhirambsn.profileapi.repository;
 
 import com.abhirambsn.profileapi.model.Profile;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProfileRepository extends JpaRepository<Profile, String> { }
+public interface ProfileRepository extends MongoRepository<Profile, String> { }
