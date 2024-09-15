@@ -1,4 +1,4 @@
-name: Github Sample Workflow
+name: Build RAG API
 on: 
   push:
     branches:
