@@ -1,4 +1,4 @@
-name: Github Sample Workflow
+name: Build Profile API
 on: 
   push:
     branches:
