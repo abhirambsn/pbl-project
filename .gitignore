@@ -1,4 +1,15 @@
-.env.dev
 \venv
+<<<<<<< Updated upstream
 .env
+=======
+*\venv
+.env.*
+.env
+*/.venv
+.vscode
+
+*_ingest_data/
+.logs/
+>>>>>>> Stashed changes
+
 .vscode
