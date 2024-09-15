@@ -2,13 +2,16 @@ from typing import List
 from sqlalchemy.orm import Session
 from ..model import File, KnowledgeBase
 from ..dto import KnowledgeBase
+from ..util import Logger
 import uuid
 
 class KnowledgeBaseRepository:
     db: Session
+    logger: Logger
 
     def __init__(self, _db: Session):
         self.db = _db
+        self.logger = Logger("knowledge-base-repository")
     
     def _gen_id():
         return uuid.uuid4()
@@ -22,6 +25,7 @@ class KnowledgeBaseRepository:
         self.db.add(new_kb)
         self.db.commit()
         self.db.refresh()
+        self.logger.info(f"Knowledge Base with id {_id} has been created")
         return new_kb
     
     def findById(self, id: str):

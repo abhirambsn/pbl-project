@@ -11,3 +11,5 @@
 *_ingest_data/
 .logs/
 >>>>>>> Stashed changes
+
+.vscode
