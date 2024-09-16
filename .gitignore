@@ -1,7 +1,5 @@
 \venv
-<<<<<<< Updated upstream
 .env
-=======
 *\venv
 .env.*
 .env
@@ -10,6 +8,6 @@
 
 *_ingest_data/
 .logs/
->>>>>>> Stashed changes
 
 .vscode
+**/.pytest_cache
