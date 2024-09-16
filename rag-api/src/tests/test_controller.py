@@ -1,9 +1,9 @@
-from ..main import create_app
-from fastapi.testclient import TestClient
+from ..controller import KnowledgeBaseController
+from ..repository import KnowledgeBaseRepository
+import pytest
 
-client = TestClient(create_app())
-
-def test_healthcheck():
-    response = client.get('/api/v1/rag/health')
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+@pytest.mark.asyncio
+async def test_create_kb():
+    kbRepo = KnowledgeBaseRepository.KnowledgeBaseRepository()
+    response = await KnowledgeBaseController.create_kb()
+    assert response == {"message": "Knowledge Base Created"}
