@@ -1,13 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class FileBase(BaseModel):
     path: str
 
 class File(FileBase):
+    model_config = ConfigDict(from_attributes=True)
     id: str
-
-    class Config:
-        from_attributes = True
 
 class FileCreate(FileBase):
     pass
