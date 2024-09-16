@@ -13,7 +13,7 @@ async def get_kb_repo():
     except:
         db.close()
 
-router = APIRouter()
+router = APIRouter(prefix="/api/v1/rag")
 
 @router.post("/")
 async def create_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):

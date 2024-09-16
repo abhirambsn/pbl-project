@@ -1,5 +1,5 @@
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class KnowledgeBase_Base(BaseModel):
     name: str
@@ -9,11 +9,9 @@ class KnowledgeBaseCreate(KnowledgeBase_Base):
     pass
 
 class KnowledgeBase(KnowledgeBase_Base):
+    model_config = ConfigDict(from_attributes=True)
     id: str
     slug: str
-
-    class Config:
-        from_attributes = True
 
 class KnowledgeBaseEdit(BaseModel):
     request_type: str
