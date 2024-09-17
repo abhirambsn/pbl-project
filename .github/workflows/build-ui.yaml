@@ -1,0 +1,80 @@
+name: React UI CI
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - ui/**
+  pull_request: 
+    branches:
+      - main
+    paths:
+      - ui/**
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+        
+        - name: Set up Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '20'
+
+        - name: Cache Node.js modules
+          uses: actions/cache@v3
+          with:
+            path: ~/.npm
+            key: ${{ runner.os }}-node-${{ hashFiles('ui/package-lock.json') }}
+            restore-keys: |
+              ${{ runner.os }}-node-
+        
+        - name: Install dependencies
+          working-directory: ui
+          run: npm ci
+        
+        - name: Run Tests
+          working-directory: ui
+          run: npm test -- --watchAll=false
+        
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+        
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v2
+        
+        - name: Login to Dockerhub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ vars.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+        
+        - name: Build and Push Docker Image
+          uses: docker/build-push-action@v5
+          with:
+            context: ./ui
+            file: ./ui/Dockerfile
+            platforms: linux/amd64,linux/arm64
+            push: true 
+            tags: ${{ vars.DOCKER_USERNAME }}/pbl-ui:latest
+
+        - name: Cache Docker layers
+          uses: actions/cache@v3
+          with:
+            path: /tmp/.buildx-cache
+            key: ${{ runner.os }}-buildx-${{ github.sha }}
+            restore-keys: |
+              ${{ runner.os }}-buildx-
+
+        
+      
+
+
+
