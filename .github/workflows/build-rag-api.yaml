@@ -50,7 +50,7 @@ jobs:
         
         - name: Run Tests
           env:
-            PG_DB_URL: postgres://build:build@localhost:5432/test_db
+            PG_DB_URL: postgresql://build:build@localhost:5432/test_db
           run: |
             pytest ./rag-api/src/tests
     
