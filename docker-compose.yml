@@ -4,7 +4,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - ./.env.postgres
+      - ./.env
   
   mongodb:
     image: mongo:latest
@@ -17,5 +17,27 @@ services:
       - MONGO_INITDB_DATABASE=rag
     ports:
       - "27017:27017"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.6
+    command: start
+    environment:
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: change_me
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres/rag
+      KC_DB_USERNAME: dev-postgres
+      KC_DB_PASSWORD: dev-postgres
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - postgres
 volumes:
   mongo_data:
