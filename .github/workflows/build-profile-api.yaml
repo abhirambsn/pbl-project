@@ -49,6 +49,7 @@ jobs:
 
       - name: Run Tests
         run: ./mvnw test
+        working-directory: profile-api
 
   docker-build:
     runs-on: ubuntu-latest
