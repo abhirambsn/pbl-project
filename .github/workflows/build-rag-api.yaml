@@ -52,7 +52,7 @@ jobs:
           env:
             PG_DB_URL: postgresql://build:build@localhost:5432/test_db
           run: |
-            pytest ./rag-api/src/tests
+            mkdir .logs && pytest ./rag-api/src/tests
     
     docker-build:
       runs-on: ubuntu-latest
