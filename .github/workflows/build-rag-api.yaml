@@ -75,7 +75,7 @@ jobs:
           uses: docker/build-push-action@v5
           with:
             context: ./rag-api
-            file: ./Dockerfile
+            file: ./rag-api/Dockerfile
             platforms: linux/amd64,linux/arm64
             push: true 
             tags: ${{ vars.DOCKER_USERNAME }}/pbl-rag-api:latest
