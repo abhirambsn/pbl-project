@@ -30,10 +30,10 @@ jobs:
 
         steps:
         - name: Checkout
-          uses: actions/checkout@v3
+          uses: actions/checkout@v4
         
         - name: Setup Python
-          uses: actions/setup-python@v4
+          uses: actions/setup-python@v5
           with:
             python-version: '3.9'
         
@@ -44,11 +44,15 @@ jobs:
               sleep 2
             done
         
+        - name: Install Dependencies
+          run: |
+            pip install -r ./rag-api/requirements.txt
+        
         - name: Run Tests
           env:
-            PG_DB_URL: postgres://build:build@localhost:5432/test_db
+            PG_DB_URL: postgresql://build:build@localhost:5432/test_db
           run: |
-            pytest rag-api/src/tests
+            mkdir .logs && pytest ./rag-api/src/tests
     
     docker-build:
       runs-on: ubuntu-latest
@@ -71,7 +75,7 @@ jobs:
           uses: docker/build-push-action@v5
           with:
             context: ./rag-api
-            file: ./Dockerfile
+            file: ./rag-api/Dockerfile
             platforms: linux/amd64,linux/arm64
             push: true 
             tags: ${{ vars.DOCKER_USERNAME }}/pbl-rag-api:latest
