@@ -1,0 +1,32 @@
+name: Dummy Workflow for Other Jobs
+on: 
+    push:
+      branches:
+        - main
+      paths-ignore:
+        - ui/**
+        - profile-api/**
+        - rag-api/**
+        - rag-chatbot/**
+    pull_request: 
+      branches:
+        - main
+      paths-ignore:
+        - ui/**
+        - profile-api/**
+        - rag-api/**
+        - rag-chatbot/**
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Echo test script
+              run: echo "This is a dummy test script"
+    
+    docker-build:
+        runs-on: ubuntu-latest
+        needs: test
+
+        steps:
+            - name: Echo docker build script
+              run: echo "This is a dummy docker build script"
