@@ -44,6 +44,10 @@ jobs:
               sleep 2
             done
         
+        - name: Install Dependencies
+          run: |
+            pip install -r ./rag-api/requirements.txt
+        
         - name: Run Tests
           env:
             PG_DB_URL: postgres://build:build@localhost:5432/test_db
