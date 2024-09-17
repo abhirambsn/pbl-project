@@ -12,6 +12,7 @@ class KnowledgeBase(KnowledgeBase_Base):
     model_config = ConfigDict(from_attributes=True)
     id: str
     slug: str
+    createdBy: str
 
 class KnowledgeBaseEdit(BaseModel):
     request_type: str
