@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./profile-api
-          file: ./Dockerfile 
+          file: ./profile-api/Dockerfile 
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ vars.DOCKER_USERNAME }}/pbl-profile-api:latest
