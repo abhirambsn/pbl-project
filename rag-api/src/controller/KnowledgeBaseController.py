@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
+from fastapi.responses import JSONResponse
 from typing import Annotated
 from ..repository.KnowledgeBaseRepository import KnowledgeBaseRepository
+from ..dto.KnowledgeBase import KnowledgeBaseCreate, KnowledgeBase as KnowledgeBaseResponse
+from ..middleware.AuthenticationMiddleware import valid_access_token
 
 from ..db import SessionLocal
 
@@ -12,26 +15,34 @@ async def get_kb_repo():
         yield knowledgeBaseRepository
     except:
         db.close()
+        raise
 
 router = APIRouter(prefix="/api/v1/rag")
 
-@router.post("/")
-async def create_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
-    return {"message": "Knowledge Base Created"}
+@router.post("/", dependencies=[Depends(valid_access_token)])
+async def create_kb(kb: KnowledgeBaseCreate, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], auth: Annotated[dict, Depends(valid_access_token)]):
+    kb_id = knowledgeBaseRepository.save(kb, auth.get('preferred_username', ''))
+    return JSONResponse({"success": True, "status": 201, "body": {"id": kb_id}}, 201)
 
-@router.get("/")
-async def get_all_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
-    return {"message": "All Knowledge Bases"}
+@router.get("/", dependencies=[Depends(valid_access_token)])
+async def get_all_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], skip: str = 0, limit: str = 10):
+    kbs = knowledgeBaseRepository.findAll(skip, limit)
+    kbs_parsed = [KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, createdBy=kb.createdBy).model_dump() for kb in kbs]
+    return JSONResponse({"success": True, "body": kbs_parsed, "status": 200}, 200)
 
-@router.get("/{kb_id}")
+@router.get("/{kb_id}", dependencies=[Depends(valid_access_token)])
 async def get_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
-    return {"message": "Knowledge Base"}
+    kb = knowledgeBaseRepository.findById(kb_id)
+    if not kb:
+        return JSONResponse({"success": False, "status": 404, "body": f"Knowledge Base with requested id: {kb_id} not found"})
+    kb_parsed = KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, createdBy=kb.createdBy).model_dump()
+    return JSONResponse({"success": True, "status": 200, "body": kb_parsed})
 
-@router.put("/{kb_id}")
+@router.put("/{kb_id}", dependencies=[Depends(valid_access_token)])
 async def edit_files_in_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
     return {"message": "Knowledge Base Edited"}
 
 
-@router.delete("/{kb_id}")
+@router.delete("/{kb_id}", dependencies=[Depends(valid_access_token)])
 async def delete_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
     return {"message": "Knowledge Base Deleted"}
