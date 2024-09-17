@@ -24,6 +24,7 @@ pydantic==2.9.1
 pydantic_core==2.23.3
 Pygments==2.18.0
 pytest==8.3.3
+pytest-asyncio==0.24.0
 python-dotenv==1.0.1
 python-multipart==0.0.9
 PyYAML==6.0.2
