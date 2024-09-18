@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, Response
 from fastapi.responses import JSONResponse
-from typing import Annotated
-from ..repository.KnowledgeBaseRepository import KnowledgeBaseRepository
-from ..dto.KnowledgeBase import KnowledgeBaseCreate, KnowledgeBase as KnowledgeBaseResponse
+from typing import Annotated, Union
+from repository.KnowledgeBaseRepository import KnowledgeBaseRepository
+from dto.KnowledgeBase import KnowledgeBaseCreate, KnowledgeBase as KnowledgeBaseResponse
 
-from ..db import SessionLocal
+from db import SessionLocal
 
 
 async def get_kb_repo():
@@ -20,14 +20,14 @@ router = APIRouter(prefix="/api/v1/rag")
 
 @router.post("/")
 async def create_kb(kb: KnowledgeBaseCreate, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
-    kb_id = knowledgeBaseRepository.save(kb, auth.get('preferred_username', ''))
+    kb_id = knowledgeBaseRepository.save(kb, "test_user")
     return JSONResponse({"success": True, "status": 201, "body": {"id": kb_id}}, 201)
 
 @router.get("/")
-async def get_all_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], skip: str = 0, limit: str = 10):
+async def get_all_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], skip: Union[int, None] = 0, limit: Union[int, None] = 10):
     kbs = knowledgeBaseRepository.findAll(skip, limit)
     kbs_parsed = [KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, createdBy=kb.createdBy).model_dump() for kb in kbs]
-    return JSONResponse({"success": True, "body": kbs_parsed, "status": 200}, 200)
+    return JSONResponse({"success": True, "body": kbs_parsed, "status": 200, "limit": limit, "offset": skip}, 200)
 
 @router.get("/{kb_id}")
 async def get_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):

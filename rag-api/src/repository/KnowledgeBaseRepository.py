@@ -1,9 +1,9 @@
 from typing import List, Union
 from sqlalchemy.orm import Session
 from slugify import slugify
-from ..model import KnowledgeBase
-from ..dto.KnowledgeBase import KnowledgeBaseCreate
-from ..util import Logger
+from model import KnowledgeBase
+from dto.KnowledgeBase import KnowledgeBaseCreate
+from util import Logger
 import uuid
 
 class KnowledgeBaseRepository:

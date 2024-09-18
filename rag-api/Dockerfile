@@ -21,4 +21,4 @@ COPY --from=builder /root/.local /root/.local
 COPY . .
 EXPOSE 8000
 
-CMD ["fastapi", "run", "src/main.py"]
+CMD ["hypercorn", "--bind", "0.0.0.0:8000", "--access-log", "-", "--error-log", "-", "src/main:app"]
