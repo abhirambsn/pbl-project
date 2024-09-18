@@ -1,4 +1,4 @@
-from ..main import create_app
+from src.main import create_app
 from fastapi.testclient import TestClient
 
 app = create_app()

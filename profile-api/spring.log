@@ -261,3 +261,4 @@ Caused by: java.net.ConnectException: Connection refused
 2024-09-18T22:30:24.569+05:30  INFO 65909 --- [profile-api] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2024-09-18T22:35:24.576+05:30  INFO 65909 --- [profile-api] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
 2024-09-18T22:40:24.548+05:30  INFO 65909 --- [profile-api] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2024-09-18T22:45:24.553+05:30  INFO 65909 --- [profile-api] [AsyncResolver-bootstrap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
