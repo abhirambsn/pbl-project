@@ -9,6 +9,8 @@ on:
         - rag-api/**
         - rag-chatbot/**
         - chat-api/**
+        - api-gateway/**
+        # - discovery-server/**
     pull_request: 
       branches:
         - main
@@ -18,6 +20,8 @@ on:
         - rag-api/**
         - rag-chatbot/**
         - chat-api/**
+        - api-gateway/**
+        # - discovery-server/**
 jobs:
     test:
         runs-on: ubuntu-latest
