@@ -1,4 +1,4 @@
-name: Chat API CI
+name: Discovery Server CI
 
 on:
   push:
