@@ -10,7 +10,7 @@ on:
         - rag-chatbot/**
         - chat-api/**
         - api-gateway/**
-        - discovery-server/**
+        # - discovery-server/**
     pull_request: 
       branches:
         - main
@@ -21,7 +21,7 @@ on:
         - rag-chatbot/**
         - chat-api/**
         - api-gateway/**
-        - discovery-server/**
+        # - discovery-server/**
 jobs:
     test:
         runs-on: ubuntu-latest
