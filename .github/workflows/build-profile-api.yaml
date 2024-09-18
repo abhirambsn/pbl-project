@@ -1,4 +1,4 @@
-name: Spring Boot Profile API CI
+name: Profile API CI
 
 on:
   push:

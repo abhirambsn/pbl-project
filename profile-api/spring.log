@@ -1,0 +1,34 @@
+2024-09-18T20:58:36.762+05:30  INFO 51487 --- [profile-api] [main] c.pbl.profileapi.ProfileApiApplication   : Starting ProfileApiApplication using Java 21.0.4 with PID 51487 (/Users/abhirambsn/Developer/pbl-project/profile-api/target/classes started by abhirambsn in /Users/abhirambsn/Developer/pbl-project/profile-api)
+2024-09-18T20:58:36.763+05:30  INFO 51487 --- [profile-api] [main] c.pbl.profileapi.ProfileApiApplication   : No active profile set, falling back to 1 default profile: "default"
+2024-09-18T20:58:36.966+05:30  INFO 51487 --- [profile-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data MongoDB repositories in DEFAULT mode.
+2024-09-18T20:58:36.987+05:30  INFO 51487 --- [profile-api] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 18 ms. Found 1 MongoDB repository interface.
+2024-09-18T20:58:37.125+05:30  INFO 51487 --- [profile-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8081 (http)
+2024-09-18T20:58:37.131+05:30  INFO 51487 --- [profile-api] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2024-09-18T20:58:37.131+05:30  INFO 51487 --- [profile-api] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.28]
+2024-09-18T20:58:37.149+05:30  INFO 51487 --- [profile-api] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2024-09-18T20:58:37.149+05:30  INFO 51487 --- [profile-api] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 372 ms
+2024-09-18T20:58:37.219+05:30  INFO 51487 --- [profile-api] [main] org.mongodb.driver.client                : MongoClient with metadata {"driver": {"name": "mongo-java-driver|sync|spring-boot", "version": "5.0.1"}, "os": {"type": "Darwin", "name": "Mac OS X", "architecture": "aarch64", "version": "15.0"}, "platform": "Java/Azul Systems, Inc./21.0.4+7-LTS"} created with settings MongoClientSettings{readPreference=primary, writeConcern=WriteConcern{w=null, wTimeout=null ms, journal=null}, retryWrites=true, retryReads=true, readConcern=ReadConcern{level=null}, credential=MongoCredential{mechanism=null, userName='admin', source='admin', password=<hidden>, mechanismProperties=<hidden>}, transportSettings=null, commandListeners=[], codecRegistry=ProvidersCodecRegistry{codecProviders=[ValueCodecProvider{}, BsonValueCodecProvider{}, DBRefCodecProvider{}, DBObjectCodecProvider{}, DocumentCodecProvider{}, CollectionCodecProvider{}, IterableCodecProvider{}, MapCodecProvider{}, GeoJsonCodecProvider{}, GridFSFileCodecProvider{}, Jsr310CodecProvider{}, JsonObjectCodecProvider{}, BsonCodecProvider{}, EnumCodecProvider{}, com.mongodb.client.model.mql.ExpressionCodecProvider@d16be4f, com.mongodb.Jep395RecordCodecProvider@17b37e9a, com.mongodb.KotlinCodecProvider@6bcb12e6]}, loggerSettings=LoggerSettings{maxDocumentLength=1000}, clusterSettings={hosts=[localhost:27017], srvServiceName=mongodb, mode=SINGLE, requiredClusterType=UNKNOWN, requiredReplicaSetName='null', serverSelector='null', clusterListeners='[]', serverSelectionTimeout='30000 ms', localThreshold='15 ms'}, socketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=0, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, heartbeatSocketSettings=SocketSettings{connectTimeoutMS=10000, readTimeoutMS=10000, receiveBufferSize=0, proxySettings=ProxySettings{host=null, port=null, username=null, password=null}}, connectionPoolSettings=ConnectionPoolSettings{maxSize=100, minSize=0, maxWaitTimeMS=120000, maxConnectionLifeTimeMS=0, maxConnectionIdleTimeMS=0, maintenanceInitialDelayMS=0, maintenanceFrequencyMS=60000, connectionPoolListeners=[], maxConnecting=2}, serverSettings=ServerSettings{heartbeatFrequencyMS=10000, minHeartbeatFrequencyMS=500, serverListeners='[]', serverMonitorListeners='[]'}, sslSettings=SslSettings{enabled=false, invalidHostNameAllowed=false, context=null}, applicationName='null', compressorList=[], uuidRepresentation=JAVA_LEGACY, serverApi=null, autoEncryptionSettings=null, dnsClient=null, inetAddressResolver=null, contextProvider=null}
+2024-09-18T20:58:37.219+05:30  INFO 51487 --- [profile-api] [cluster-ClusterId{value='66eaf1a5253b8a1b02456926', description='null'}-localhost:27017] org.mongodb.driver.cluster               : Exception in monitor thread while connecting to server localhost:27017
+
+com.mongodb.MongoSocketOpenException: Exception opening socket
+	at com.mongodb.internal.connection.SocketStream.lambda$open$0(SocketStream.java:86) ~[mongodb-driver-core-5.0.1.jar:na]
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403) ~[na:na]
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:86) ~[mongodb-driver-core-5.0.1.jar:na]
+	at com.mongodb.internal.connection.InternalStreamConnection.open(InternalStreamConnection.java:201) ~[mongodb-driver-core-5.0.1.jar:na]
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.lookupServerDescription(DefaultServerMonitor.java:193) ~[mongodb-driver-core-5.0.1.jar:na]
+	at com.mongodb.internal.connection.DefaultServerMonitor$ServerMonitorRunnable.run(DefaultServerMonitor.java:153) ~[mongodb-driver-core-5.0.1.jar:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: java.net.ConnectException: Connection refused
+	at java.base/sun.nio.ch.Net.pollConnect(Native Method) ~[na:na]
+	at java.base/sun.nio.ch.Net.pollConnectNow(Net.java:682) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.timedFinishConnect(NioSocketImpl.java:542) ~[na:na]
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:592) ~[na:na]
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327) ~[na:na]
+	at java.base/java.net.Socket.connect(Socket.java:757) ~[na:na]
+	at com.mongodb.internal.connection.SocketStreamHelper.initialize(SocketStreamHelper.java:76) ~[mongodb-driver-core-5.0.1.jar:na]
+	at com.mongodb.internal.connection.SocketStream.initializeSocket(SocketStream.java:105) ~[mongodb-driver-core-5.0.1.jar:na]
+	at com.mongodb.internal.connection.SocketStream.open(SocketStream.java:80) ~[mongodb-driver-core-5.0.1.jar:na]
+	... 4 common frames omitted
+
+2024-09-18T20:58:37.460+05:30  INFO 51487 --- [profile-api] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8081 (http) with context path '/'
+2024-09-18T20:58:37.466+05:30  INFO 51487 --- [profile-api] [main] c.pbl.profileapi.ProfileApiApplication   : Started ProfileApiApplication in 0.87 seconds (process running for 1.114)

@@ -1,16 +1,16 @@
-name: Chat API CI
+name: API Gateway CI
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'chat-api/**'
+      - 'api-gateway/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'chat-api/**'
+      - 'api-gateway/**'
 
 jobs:
   test:
@@ -49,7 +49,7 @@ jobs:
 
       - name: Run Tests
         run: ./mvnw test
-        working-directory: chat-api
+        working-directory: api-gateway
 
   docker-build:
     runs-on: ubuntu-latest
@@ -71,11 +71,11 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./chat-api
-          file: ./chat-api/Dockerfile 
+          context: ./api-gateway
+          file: ./api-gateway/Dockerfile 
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/pbl-chat-api:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/pbl-api-gateway:latest
 
       - name: Cache Docker layers
         uses: actions/cache@v4
