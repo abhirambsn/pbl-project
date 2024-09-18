@@ -1,4 +1,4 @@
-from ..db import Base
+from db import Base
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, ARRAY
 
 class KnowledgeBase(Base):

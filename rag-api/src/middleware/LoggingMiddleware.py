@@ -1,7 +1,7 @@
 from typing import Awaitable, Callable
 from fastapi import Request
 from starlette.responses import Response
-from ..util import Logger
+from util import Logger
 from starlette.middleware.base import BaseHTTPMiddleware
 import uuid
 

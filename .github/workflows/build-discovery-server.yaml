@@ -1,16 +1,16 @@
-name: API Gateway CI
+name: Discovery Server CI
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'api-gateway/**'
+      - 'discovery-server/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'api-gateway/**'
+      - 'discovery-server/**'
 
 jobs:
   test:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Run Tests
         run: ./mvnw test
-        working-directory: api-gateway
+        working-directory: discovery-server
 
   docker-build:
     runs-on: ubuntu-latest
@@ -59,11 +59,11 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./api-gateway
-          file: ./api-gateway/Dockerfile 
+          context: ./discovery-server
+          file: ./discovery-server/Dockerfile 
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/pbl-api-gateway:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/pbl-discovery-server:latest
 
       - name: Cache Docker layers
         uses: actions/cache@v4
