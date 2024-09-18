@@ -3,7 +3,6 @@ from fastapi.responses import JSONResponse
 from typing import Annotated
 from ..repository.KnowledgeBaseRepository import KnowledgeBaseRepository
 from ..dto.KnowledgeBase import KnowledgeBaseCreate, KnowledgeBase as KnowledgeBaseResponse
-from ..middleware.AuthenticationMiddleware import valid_access_token
 
 from ..db import SessionLocal
 
@@ -19,18 +18,18 @@ async def get_kb_repo():
 
 router = APIRouter(prefix="/api/v1/rag")
 
-@router.post("/", dependencies=[Depends(valid_access_token)])
-async def create_kb(kb: KnowledgeBaseCreate, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], auth: Annotated[dict, Depends(valid_access_token)]):
+@router.post("/")
+async def create_kb(kb: KnowledgeBaseCreate, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
     kb_id = knowledgeBaseRepository.save(kb, auth.get('preferred_username', ''))
     return JSONResponse({"success": True, "status": 201, "body": {"id": kb_id}}, 201)
 
-@router.get("/", dependencies=[Depends(valid_access_token)])
+@router.get("/")
 async def get_all_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], skip: str = 0, limit: str = 10):
     kbs = knowledgeBaseRepository.findAll(skip, limit)
     kbs_parsed = [KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, createdBy=kb.createdBy).model_dump() for kb in kbs]
     return JSONResponse({"success": True, "body": kbs_parsed, "status": 200}, 200)
 
-@router.get("/{kb_id}", dependencies=[Depends(valid_access_token)])
+@router.get("/{kb_id}")
 async def get_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
     kb = knowledgeBaseRepository.findById(kb_id)
     if not kb:
@@ -38,11 +37,11 @@ async def get_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRep
     kb_parsed = KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, createdBy=kb.createdBy).model_dump()
     return JSONResponse({"success": True, "status": 200, "body": kb_parsed})
 
-@router.put("/{kb_id}", dependencies=[Depends(valid_access_token)])
+@router.put("/{kb_id}")
 async def edit_files_in_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
     return {"message": "Knowledge Base Edited"}
 
 
-@router.delete("/{kb_id}", dependencies=[Depends(valid_access_token)])
+@router.delete("/{kb_id}")
 async def delete_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
     return {"message": "Knowledge Base Deleted"}
