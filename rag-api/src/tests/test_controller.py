@@ -5,5 +5,5 @@ app = create_app()
 client = TestClient(app)
 
 def test_health():
-    resp = client.get('/api/v1/rag/health')
+    resp = client.get('/health')
     assert resp.status_code == 200
