@@ -12,6 +12,8 @@ load_dotenv()
 
 Base.metadata.create_all(bind=engine)
 
+print(os.getenv("EUREKA_SERVER"))
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger = Logger("rag-api-eureka")
