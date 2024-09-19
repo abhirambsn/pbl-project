@@ -1,6 +1,7 @@
 services:
   postgres:
     image: postgres:15.5
+    container_name: postgres
     ports:
       - "5432:5432"
     env_file:
@@ -17,13 +18,27 @@ services:
       - MONGO_INITDB_DATABASE=rag
     ports:
       - "27017:27017"
+  
+  mongo-express:
+    image: mongo-express
+    container_name: mongodb-express
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@mongo:27017/chat?ssl=false&authSource=admin
+      ME_CONFIG_MONGODB_AUTH_USERNAME: admin
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: admin
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: password
+    ports:
+      - "9000:8081"
+
 
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.6
+    container_name: keycloak
     command: start
     environment:
       KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_PORT: 10000
       KC_HOSTNAME_STRICT_BACKCHANNEL: false
       KC_HTTP_ENABLED: true
       KC_HOSTNAME_STRICT_HTTPS: false
@@ -35,7 +50,7 @@ services:
       KC_DB_USERNAME: dev-postgres
       KC_DB_PASSWORD: dev-postgres
     ports:
-      - 8080:8080
+      - 10000:8080
     restart: always
     depends_on:
       - postgres
