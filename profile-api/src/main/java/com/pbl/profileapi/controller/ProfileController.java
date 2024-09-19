@@ -4,6 +4,7 @@ import com.pbl.profileapi.dto.CreateProfile;
 import com.pbl.profileapi.dto.JsonResponse;
 import com.pbl.profileapi.model.Profile;
 import com.pbl.profileapi.service.ProfileService;
+import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -13,15 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/profile")
+@AllArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
     private static final Logger LOG = LogManager.getLogger(ProfileController.class);
-
-    public ProfileController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     @GetMapping("/health")
     public ResponseEntity<JsonResponse<String>> hello() {

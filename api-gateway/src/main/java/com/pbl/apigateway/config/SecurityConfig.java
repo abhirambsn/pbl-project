@@ -24,6 +24,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authReqMgr -> authReqMgr
                                 .requestMatchers("/eureka/**").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2Config ->
