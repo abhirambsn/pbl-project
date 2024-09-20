@@ -25,6 +25,8 @@ public class SecurityConfig {
                         authReqMgr -> authReqMgr
                                 .requestMatchers("/eureka/**").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
+                                .requestMatchers("/api/v1/chat/actuator/**").permitAll()
+                                .requestMatchers("/api/v1/profile/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2Config ->
