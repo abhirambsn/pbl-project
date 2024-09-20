@@ -5,6 +5,7 @@ from model import KnowledgeBase
 from dto.KnowledgeBase import KnowledgeBaseCreate
 from util import Logger
 import uuid
+import time
 
 class KnowledgeBaseRepository:
     db: Session
@@ -21,21 +22,46 @@ class KnowledgeBaseRepository:
         return files
     
     def save(self, kb: KnowledgeBaseCreate, createdBy: str) -> str:
+        start_time = time.time()
         _id = self._gen_id()
         new_kb = KnowledgeBase(id = _id, name = kb.name, files = kb.files, slug = slugify(kb.name), createdBy = createdBy)
         self.db.add(new_kb)
         self.db.commit()
         self.db.refresh(new_kb)
-        self.logger.info(f"Knowledge Base with id {_id} has been created")
+        process_time = time.time() - start_time
+        self.logger.info({
+            "request.id": _id,
+            "request.type": "db",
+            "request.method": "insert", 
+            "response.process-time": round(process_time, 3),
+            "misc.message": f"Knowledge Base with id {_id} has been created"
+        })
         return new_kb.id
     
     def findById(self, id: str) -> Union[KnowledgeBase, None]:
+        req_id = str(uuid.uuid4())
+        start_time = time.time()
         kb = self.db.query(KnowledgeBase).filter(KnowledgeBase.id == id).first()
         if not kb:
-            self.logger.error(f"Knowledge Base with requested id: {id} not found")
+            self.logger.error({
+                "request.id": req_id,
+                "request.type": "db",
+                "request.method": "insert", 
+                "response.process-time": 0,
+                "misc.message": f"Knowledge Base with requested id: {id} not found"
+            })
             return None
         
-        self.logger.info(f"Fetched Knowledge Base with id: {id}")
+        process_time = time.time() - start_time
+
+        self.logger.info({
+            "request.id": req_id,
+            "request.type": "db",
+            "request.method": "insert", 
+            "response.process-time": round(process_time, 3),
+            "misc.message": f"Fetched Knowledge Base with id: {id}"
+        })
+
         kb.files = self._build_filepath_from_ids(kb.files)
         return kb
     

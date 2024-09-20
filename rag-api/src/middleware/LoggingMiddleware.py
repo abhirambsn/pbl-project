@@ -23,6 +23,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         host = f"{request.client.host}:{request.client.port}"
         self.logger.info({
             "request.id": request_id,
+            "request.type": "http",
             "request.url": str(request.url), 
             "request.method": request.method, 
             "request.host": host, 
@@ -31,7 +32,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             "response.status_code": response.status_code,
             "response.content-length": response.headers.get("content-length"),
             "response.content-type": response.headers.get("content-type"),
-            "response.process-time": round(process_time, 3)
+            "response.process-time": round(process_time, 3),
+            "misc.message": 'logged'
         })
         return response
         

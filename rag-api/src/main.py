@@ -19,16 +19,37 @@ async def lifespan(app: FastAPI):
     start_time = time.time()
     logger = Logger("rag-api-eureka")
     try:
-        logger.info("Registering with Eureka")
+        log_body = {
+            "request.url": os.getenv("EUREKA_SERVER"),
+            "request.method": None,
+            "request.host": None,
+            "request.user-agent": None,
+            "request.remote-address": None,
+            "response.status_code": None,
+            "response.content-length": None,
+            "response.content-type": None,
+        }
+        logger.info({
+            **log_body,
+            "misc.message": "Registering with Eureka Server"
+        })
         await eureka_client.init_async(
             eureka_server=os.getenv("EUREKA_SERVER"),
             app_name="rag-api",
             instance_port=8000
         )
-        logger.info(f"Registered with Eureka Server @ {os.getenv('EUREKA_SERVER')}")
+
+
+        logger.info({
+            **log_body,
+            "misc.message": f"Registered with Eureka Server @ {os.getenv('EUREKA_SERVER')}"
+        })
         app_start_time = time.time() - start_time
         set_start_time(app_start_time)
-        logger.info(f"Application started in {app_start_time} seconds")
+        logger.info({
+            **log_body,
+            "misc.message": f"App started in {app_start_time} seconds"
+        })
         yield
     except Exception as e:
         logger.error(f"Error registering with Eureka: {e}")
