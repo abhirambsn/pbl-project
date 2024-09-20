@@ -13,3 +13,6 @@
 **/.pytest_cache
 
 **/spring.log
+**/spring.log*.gz
+
+elk-stack/

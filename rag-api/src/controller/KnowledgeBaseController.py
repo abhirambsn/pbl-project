@@ -16,7 +16,7 @@ async def get_kb_repo():
         db.close()
         raise
 
-router = APIRouter(prefix="/api/v1/rag")
+router = APIRouter()
 
 @router.post("/")
 async def create_kb(kb: KnowledgeBaseCreate, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
