@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 from util import Logger
 from util.Metrics import set_start_time
+from prometheus_client import make_asgi_app
 import os
 import time
 
@@ -54,11 +55,15 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Error registering with Eureka: {e}")
 
+
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
     app.add_middleware(LoggingMiddleware)
     app.include_router(ActuatorController.router)
     app.include_router(KnowledgeBaseController.router)
+
+    prometheus_metrics = make_asgi_app()
+    app.mount("/actuator/prometheus", prometheus_metrics)
     return app
 
 # app = create_app()
