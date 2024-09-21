@@ -1,0 +1,97 @@
+name: pbl-prod
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb-prod
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - ./envs/.mongo.env
+    ports:
+      - "27017:27017"
+  
+  postgres:
+    image: postgres:15.5
+    container_name: postgresql-prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./envs/.pg.env
+
+  discovery-server:
+    image: abhirambsn/pbl-discovery-server:latest
+    container_name: discovery-server
+    volumes:
+      - ./.logs:/.logs
+    env_file:
+      - ./envs/.ds.env
+  
+  profile-api:
+    image: abhirambsn/pbl-profile-api:latest
+    container_name: profile-api
+    env_file:
+      - ./envs/.pa.env
+    volumes:
+      - ./.logs:/.logs
+    depends_on:
+      - mongodb
+      - discovery-server
+  
+  chat-api:
+    image: abhirambsn/pbl-chat-api:latest
+    container_name: chat-api
+    env_file:
+      - ./envs/.ca.env
+    volumes:
+      - ./.logs:/.logs
+    depends_on:
+      - mongodb
+      - discovery-server
+  
+  rag-api:
+    image: abhirambsn/pbl-rag-api:latest
+    container_name: rag-api
+    env_file:
+      - ./envs/.ra.env
+    volumes:
+      - ./.logs:/.logs
+    depends_on:
+      - mongodb
+      - discovery-server
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.6
+    container_name: keycloak-prod
+    command: start
+    env_file:
+      - ./envs/.kc.env
+    ports:
+      - 8080:8080
+    restart: always
+    volumes:
+      - keycloak_data:/data
+    depends_on:
+      - postgres
+  
+  api-gateway:
+    image: abhirambsn/pbl-api-gateway:latest
+    container_name: api-gateway
+    env_file:
+      - ./envs/.ag.env
+    volumes:
+      - ./.logs:/.logs
+    depends_on:
+      - discovery-server
+      - profile-api
+      - chat-api
+      - rag-api
+      - keycloak
+    ports:
+      - "80:8080"
+
+volumes:
+  mongo_data:
+  keycloak_data:
+  postgres_data:
