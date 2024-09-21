@@ -65,8 +65,9 @@ jobs:
       - name: Log in to DockerHub
         uses: docker/login-action@v3
         with:
-          username: ${{ vars.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -75,7 +76,9 @@ jobs:
           file: ./chat-api/Dockerfile 
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/pbl-chat-api:latest
+          tags: |
+            ghcr.io/${{ github.actor }}/pbl-chat-api:latest
+            ghcr.io/${{ github.actor }}/pbl-chat-api:${{ github.ref == 'refs/heads/main' && 'prod' || github.sha }}
 
       - name: Cache Docker layers
         uses: actions/cache@v4
