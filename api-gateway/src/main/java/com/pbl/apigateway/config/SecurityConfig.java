@@ -27,6 +27,7 @@ public class SecurityConfig {
                                 .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/api/v1/chat/actuator/**").permitAll()
                                 .requestMatchers("/api/v1/profile/actuator/**").permitAll()
+                                .requestMatchers("/api/v1/rag/actuator/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2Config ->
