@@ -20,6 +20,8 @@ on:
       - '**/*.md'
       - '**/*.txt'
       - 'conf/**'
+      - '.github/**'
+      - '**/*.yml'
   schedule:
     - cron: '39 22 * * 5'
 
