@@ -66,9 +66,11 @@ services:
       - mongodb
   
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.6
+    build:
+      context: .
+      dockerfile: ./Dockerfile.keycloak
     container_name: keycloak-prod
-    command: start
+    command: start --hostname http://localhost:8080 --hostname-backchannel-dynamic true --optimized
     env_file:
       - ./envs/.kc.env
     ports:
