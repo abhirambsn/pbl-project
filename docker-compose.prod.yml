@@ -27,39 +27,43 @@ services:
       - ./.logs:/.logs
     env_file:
       - ./envs/.ds.env
+      - ./envs/.common.env
   
   profile-api:
     image: abhirambsn/pbl-profile-api:latest
     container_name: profile-api
     env_file:
       - ./envs/.pa.env
+      - ./envs/.common.env
     volumes:
       - ./.logs:/.logs
     depends_on:
-      - mongodb
       - discovery-server
+      - mongodb
   
   chat-api:
     image: abhirambsn/pbl-chat-api:latest
     container_name: chat-api
     env_file:
       - ./envs/.ca.env
+      - ./envs/.common.env
     volumes:
       - ./.logs:/.logs
     depends_on:
-      - mongodb
       - discovery-server
+      - mongodb
   
   rag-api:
     image: abhirambsn/pbl-rag-api:latest
     container_name: rag-api
     env_file:
       - ./envs/.ra.env
+      - ./envs/.common.env
     volumes:
       - ./.logs:/.logs
     depends_on:
-      - mongodb
       - discovery-server
+      - mongodb
   
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.6
@@ -80,6 +84,7 @@ services:
     container_name: api-gateway
     env_file:
       - ./envs/.ag.env
+      - ./envs/.common.env
     volumes:
       - ./.logs:/.logs
     depends_on:
