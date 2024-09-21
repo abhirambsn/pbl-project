@@ -1,6 +1,7 @@
 name: Discovery Server CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
