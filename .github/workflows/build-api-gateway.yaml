@@ -1,6 +1,7 @@
 name: API Gateway CI
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main

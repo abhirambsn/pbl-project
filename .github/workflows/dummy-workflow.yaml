@@ -1,5 +1,6 @@
 name: Dummy Workflow for Other Jobs
 on: 
+    workflow_dispatch:
     push:
       branches:
         - main
