@@ -1,7 +1,14 @@
 name: pbl-prod
 services:
+  watchtower: 
+    image: containrrr/watchtower
+    container_name: watchtower
+    command: --interval 30 --label-enable
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
   mongodb:
-    image: mongo:latest
+    image: mongo:6
     container_name: mongodb-prod
     volumes:
       - mongo_data:/data/db
@@ -21,8 +28,10 @@ services:
       - ./envs/.pg.env
 
   discovery-server:
-    image: abhirambsn/pbl-discovery-server:latest
+    image: ghcr.io/abhirambsn/pbl-discovery-server:prod
     container_name: discovery-server
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     volumes:
       - ./.logs:/.logs
     env_file:
@@ -30,8 +39,10 @@ services:
       - ./envs/.common.env
   
   profile-api:
-    image: abhirambsn/pbl-profile-api:latest
+    image: ghcr.io/abhirambsn/pbl-profile-api:prod
     container_name: profile-api
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     env_file:
       - ./envs/.pa.env
       - ./envs/.common.env
@@ -42,8 +53,10 @@ services:
       - mongodb
   
   chat-api:
-    image: abhirambsn/pbl-chat-api:latest
+    image: ghcr.io/abhirambsn/pbl-chat-api:prod
     container_name: chat-api
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     env_file:
       - ./envs/.ca.env
       - ./envs/.common.env
@@ -54,8 +67,10 @@ services:
       - mongodb
   
   rag-api:
-    image: abhirambsn/pbl-rag-api:latest
+    image: ghcr.io/abhirambsn/pbl-rag-api:prod
     container_name: rag-api
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     env_file:
       - ./envs/.ra.env
       - ./envs/.common.env
@@ -82,8 +97,10 @@ services:
       - postgres
   
   api-gateway:
-    image: abhirambsn/pbl-api-gateway:latest
+    image: ghcr.io/abhirambsn/pbl-api-gateway:prod
     container_name: api-gateway
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     env_file:
       - ./envs/.ag.env
       - ./envs/.common.env
