@@ -4,6 +4,7 @@ from main import create_app
 from util import HypercornLoggerAdapter, Logger
 import asyncio
 import tracemalloc
+from prometheus_fastapi_instrumentator import Instrumentator
 
 tracemalloc.start()
 
@@ -13,7 +14,10 @@ config = Config()
 config.bind = ["0.0.0.0:8000"]
 config.logger_class = HypercornLoggerAdapter
 
+instrumentator = Instrumentator()
+
 app = create_app()
+instrumentator.instrument(app).expose(app, endpoint="/actuator/prometheus")
 
 async def main_fn():
     try:

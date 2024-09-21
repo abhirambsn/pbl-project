@@ -19,7 +19,7 @@ scrape_configs:
     static_configs:
       - targets:
         - prometheus:9090
-  - job_name: pbl-api-gateway-monitor
+  - job_name: pbl-monitor
     honor_timestamps: true
     scrape_interval: 15s
     scrape_timeout: 10s
@@ -28,4 +28,6 @@ scrape_configs:
     static_configs:
       - targets:
         - api-gateway:8080
-      
+        - chat-api:8080
+        - profile-api:8080
+        - rag-api:8080
