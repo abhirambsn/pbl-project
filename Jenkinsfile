@@ -74,11 +74,13 @@ pipeline {
                         if (module == 'ui') {
                             sh "cd ${module} && npm install && npm run test"
                         } else if (module == 'rag-api') {
-                            sh "python3 -m venv /tmp/venv"
-                            sh ". /tmp/venv/bin/activate"
-                            sh "cd ${module} && pip install --no-cache -r requirements.txt && pytest src/tests"
-                            sh "deactivate"
-                            sh "rm -rf /tmp/venv"
+                            sh '''
+                            python3 -m venv /tmp/venv
+                            . /tmp/venv/bin/activate
+                            cd rag-api && pip install --no-cache -r requirements.txt && pytest src/tests
+                            deactivate
+                            rm -rf /tmp/venv
+                            '''
                         } else {
                             sh "cd ${module} && ./mvnw test"
                         }
