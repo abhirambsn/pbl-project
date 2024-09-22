@@ -48,6 +48,13 @@ pipeline {
         }
 
         stage('Setup PostgreSQL Database') {
+            when {
+                expression {
+                    env.MODULES_TO_BUILD != null
+                    def modules = env.MODULES_TO_BUILD.split(',')
+                    return modules.contains('rag-api')
+                }
+            }
             steps {
                 script {
                     echo "Starting PostgreSQL container for tests"
@@ -171,7 +178,7 @@ pipeline {
             emailext(
                 subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
                 body: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                to: 'abhirambsn@gmail.com'
             )
         }
 
@@ -180,7 +187,7 @@ pipeline {
             emailext(
                 subject: "Build Successful: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
                 body: "Build Successful: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
-                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+                to: 'abhirambsn@gmail.com'
             )
         }
     }
