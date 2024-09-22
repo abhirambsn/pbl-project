@@ -75,7 +75,7 @@ pipeline {
                             sh "cd ${module} && npm install && npm run test"
                         } else if (module == 'rag-api') {
                             sh "python3 -m venv /tmp/venv"
-                            sh "source /tmp/venv/bin/activate"
+                            sh ". /tmp/venv/bin/activate"
                             sh "cd ${module} && pip install --no-cache -r requirements.txt && pytest src/tests"
                             sh "deactivate"
                             sh "rm -rf /tmp/venv"
