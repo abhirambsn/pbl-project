@@ -165,5 +165,23 @@ pipeline {
             sh 'docker stop postgres-test && docker rm postgres-test'
             cleanWs()
         }
+
+        failure {
+            echo 'Build failed'
+            emailext(
+                subject: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                body: "Build Failed: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
+        }
+
+        success {
+            echo 'Build successful'
+            emailext(
+                subject: "Build Successful: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                body: "Build Successful: ${env.JOB_NAME} - ${env.BUILD_NUMBER}",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
+        }
     }
 }
