@@ -18,7 +18,12 @@ pipeline {
         REGISTRY_USERNAME = "abhirambsn"
         DOCKER_CREDS_ID = 'github-docker-creds'
         DOCKER_TAG = "${params['build-env']}"
+        POSTGRES_IMAGE = 'postgres:15.5'
+        POSTGRES_DB = 'rag'
+        POSTGRES_USER = 'dev-postgres'
+        POSTGRES_PASSWORD = 'dev-postgres'
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -41,6 +46,24 @@ pipeline {
                 }
             }
         }
+
+        stage('Setup PostgreSQL Database') {
+            steps {
+                script {
+                    echo "Starting PostgreSQL container for tests"
+                    sh """
+                        docker run --name postgres-test -d \
+                        -e POSTGRES_DB=${POSTGRES_DB} \
+                        -e POSTGRES_USER=${POSTGRES_USER} \
+                        -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
+                        -p 5432:5432 ${POSTGRES_IMAGE}
+                    """
+                    
+                    sleep 10
+                }
+            }
+        }
+
 
         stage('Setup Test Environemnt') {
             when {
