@@ -169,8 +169,15 @@ pipeline {
 
     post {
         always {
-            sh 'docker stop postgres-test && docker rm postgres-test'
+            echo 'Cleaning up workspace'
             cleanWs()
+            if (env.MODULES_TO_BUILD != null) {
+                def modules = env.MODULES_TO_BUILD.split(',')
+                if (modules.contains('rag-api')) {
+                    echo 'Stopping PostgreSQL test container'
+                    sh 'docker stop postgres-test && docker rm postgres-test'
+                }
+            }
         }
 
         failure {
