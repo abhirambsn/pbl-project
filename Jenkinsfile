@@ -162,6 +162,7 @@ pipeline {
 
     post {
         always {
+            sh 'docker stop postgres-test && docker rm postgres-test'
             cleanWs()
         }
     }
