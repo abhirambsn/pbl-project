@@ -67,7 +67,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.actor }}/pbl-discovery-server:latest
-            ghcr.io/${{ github.actor }}/pbl-discovery-server:${{ github.ref == 'refs/heads/main' && 'prod' || github.sha }}
+            ghcr.io/${{ github.actor }}/pbl-discovery-server:${{ github.ref == 'refs/heads/main' && 'staging' || github.sha }}
 
       - name: Cache Docker layers
         uses: actions/cache@v4

@@ -22,6 +22,7 @@ on:
       - 'conf/**'
       - '.github/**'
       - '**/*.yml'
+      - 'Jenkinsfile'
   schedule:
     - cron: '39 22 * * 5'
 

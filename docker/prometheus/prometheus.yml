@@ -30,4 +30,4 @@ scrape_configs:
         - api-gateway:8080
         - chat-api:8080
         - profile-api:8080
-        - rag-api:8080
+        - rag-api:8000
