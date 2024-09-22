@@ -130,7 +130,7 @@ pipeline {
                             sh "cd ${module} && docker build -t ${REGISTRY}/${REGISTRY_USERNAME}/pbl-${module}:${DOCKER_TAG} ."
                         } else {
                             sh "cd ${module} && ./mvnw -DskipTests package"
-                            sh "docker build -t ${REGISTRY}/${REGISTRY_USERNAME}/pbl-${module}:${DOCKER_TAG} ."
+                            sh "cd ${module} && docker build -t ${REGISTRY}/${REGISTRY_USERNAME}/pbl-${module}:${DOCKER_TAG} ."
                         }
                     }
                 }
