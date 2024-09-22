@@ -66,7 +66,7 @@ pipeline {
                         echo "Setting up test environment for module: ${module}"
 
                         if (module == 'ui') {
-                            sh "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -"
+                            sh "curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -"
                             sh "sudo apt-get install -y nodejs"
                         } 
                         if (module == 'rag-api') {
