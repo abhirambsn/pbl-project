@@ -10,11 +10,9 @@ pipeline {
         DOCKER_TAG = "${params['build-env']}"
     }
     stages {
-        stage('Determine Modules to Build') {
+        stage('Checkout') {
             steps {
-                stage('Checkout') {
-                    checkout scm
-                }
+                checkout scm
             }
         }
 
