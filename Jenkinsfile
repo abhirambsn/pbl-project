@@ -16,7 +16,7 @@ pipeline {
     environment {
         REGISTRY = "ghcr.io"
         REGISTRY_USERNAME = "abhirambsn"
-        DOCKER_CREDS_ID = 'github-docker-creds'
+        DOCKER_CREDENTIALS_ID = 'github-docker-creds'
         DOCKER_TAG = "${params['build-env']}"
         POSTGRES_IMAGE = 'postgres:15.5'
         POSTGRES_DB = 'rag'
