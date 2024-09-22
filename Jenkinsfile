@@ -2,6 +2,16 @@ pipeline {
     agent any
     parameters {
         choice(name: 'build-env', choices: ['prod', 'pre-prod'], description: 'Select the environment of the build')
+        extendedChoice(
+            defaultValue: 'api-gateway,discovery-server,profile-api,chat-api,rag-api,ui',
+            description: 'Select the modules to build',
+            multiSelectDelimiter: ',',
+            name: 'modules-to-build',
+            quoteValue: false,
+            type: 'PT_MULTI_SELECT',
+            value: 'api-gateway,discovery-server,profile-api,chat-api,rag-api,ui',
+            visibleItemCount: 6
+        )
     }
     environment {
         REGISTRY = "ghcr.io"
@@ -19,28 +29,7 @@ pipeline {
         stage('Determine Modules to Build') {
             steps {
                 script {
-                    def changes = sh(script: "git diff --name-only HEAD~1 HEAD", returnStdout: true).trim().split('\n')
-
-                    def modulesToBuild = []
-
-                    if (changes.any { it.startsWith('api-gateway/') }) {
-                        modulesToBuild.add('api-gateway')
-                    }
-                    if (changes.any { it.startsWith('discovery-server/') }) {
-                        modulesToBuild.add('discovery-server')
-                    }
-                    if (changes.any { it.startsWith('chat-api/') }) {
-                        modulesToBuild.add('chat-api')
-                    }
-                    if (changes.any { it.startsWith('profile-api/') }) {
-                        modulesToBuild.add('profile-api')
-                    }
-                    if (changes.any { it.startsWith('rag-api/') }) {
-                        modulesToBuild.add('rag-api')
-                    }
-                    if (changes.any { it.startsWith('ui/') }) {
-                        modulesToBuild.add('ui')
-                    }
+                    def modulesToBuild = params['modules-to-build'].split(',').collect { it.trim() }
 
                     if (modulesToBuild) {
                         env.MODULES_TO_BUILD = modulesToBuild.join(',')
