@@ -53,18 +53,6 @@ pipeline {
                     def modules = env.MODULES_TO_BUILD.split(',')
                     modules.each { module ->
                         echo "Setting up test environment for module: ${module}"
-
-                        if (module == 'ui') {
-                            sh "curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -"
-                            sh "sudo apt-get install -y nodejs"
-                        } 
-                        if (module == 'rag-api') {
-                            sh "sudo apt-get install -y python3 python3-pip"
-                        }
-                        if (module == 'api-gateway' || module == 'discovery-server' || module == 'chat-api' || module == 'profile-api') {
-                            sh "sudo apt-get install -y openjdk-21-jdk"
-                            sh "sudo apt-get install -y maven"
-                        }
                     }
                 }
             }
