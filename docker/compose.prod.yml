@@ -46,7 +46,6 @@ services:
     volumes:
       - ../.logs:/.logs
     env_file:
-      - ./envs/.ds.env
       - ./envs/.common.env
   
   profile-api:
@@ -54,7 +53,6 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     env_file:
-      - ./envs/.pa.env
       - ./envs/.common.env
     volumes:
       - ../.logs:/.logs
@@ -67,10 +65,9 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     env_file:
-      - ./envs/.ca.env
       - ./envs/.common.env
     volumes:
-      - .../.logs:/.logs
+      - ../.logs:/.logs
     depends_on:
       - discovery-server
       - mongodb
@@ -80,10 +77,9 @@ services:
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     env_file:
-      - ./envs/.ra.env
       - ./envs/.common.env
     volumes:
-      - .../.logs:/.logs
+      - ../.logs:/.logs
     depends_on:
       - discovery-server
       - mongodb
@@ -111,7 +107,6 @@ services:
       - "traefik.http.routers.api-gateway.rule=Host(`localhost`)"
       - "traefik.enable=true"
     env_file:
-      - ./envs/.ag.env
       - ./envs/.common.env
     volumes:
       - ../.logs:/.logs
