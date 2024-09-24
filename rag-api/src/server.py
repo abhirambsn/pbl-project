@@ -27,7 +27,7 @@ async def main_fn():
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics('lineno')
         for stat in top_stats[:10]:
-            err_logger.error(stat)
+            err_logger.error(str(stat))
             pass
         raise
     finally:
