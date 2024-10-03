@@ -11,6 +11,20 @@ services:
       - "9000:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  
+  sonarqube:
+    image: sonarqube:community
+    depends_on:
+      - postgres
+    env_file:
+      - ./envs/.sonar.env
+    ports:
+      - "9001:9000"
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - ../.logs:/opt/sonarqube/logs
+    
 
   watchtower: 
     image: containrrr/watchtower
@@ -24,7 +38,7 @@ services:
     container_name: mongodb-prod
     volumes:
       - mongo_data:/data/db
-    environment:
+    env_file:
       - ./envs/.mongo.env
     ports:
       - "27017:27017"
@@ -125,3 +139,5 @@ volumes:
   mongo_data:
   keycloak_data:
   postgres_data:
+  sonarqube_data:
+  sonarqube_extensions:
