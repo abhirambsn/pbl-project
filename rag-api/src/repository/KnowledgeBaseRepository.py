@@ -24,7 +24,7 @@ class KnowledgeBaseRepository:
     def save(self, kb: KnowledgeBaseCreate, createdBy: str) -> str:
         start_time = time.time()
         _id = self._gen_id()
-        new_kb = KnowledgeBase(id = _id, name = kb.name, files = kb.files, slug = slugify(kb.name), createdBy = createdBy)
+        new_kb = KnowledgeBase(id = _id, name = kb.name, files = kb.files, urls = kb.urls, slug = slugify(kb.name), createdBy = createdBy)
         self.db.add(new_kb)
         self.db.commit()
         self.db.refresh(new_kb)

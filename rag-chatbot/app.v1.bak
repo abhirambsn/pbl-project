@@ -5,15 +5,15 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain_community.vectorstores import Pinecone
-import pinecone
+from langchain_pinecone import PineconeVectorStore
+from pinecone import Pinecone, ServerlessSpec
 
 
 load_dotenv()
 
 google_api_key = os.environ['GOOGLE_API_KEY']
-supabase_url = os.environ['SUPABASE_URL']
-supabase_service_key = os.environ['SUPABASE_SERVICE_KEY']
+# supabase_url = os.environ['SUPABASE_URL']
+# supabase_service_key = os.environ['SUPABASE_SERVICE_KEY']
 
 with st.sidebar:
     website = st.text_input("Enter Website URL")
@@ -26,22 +26,25 @@ if web_submit:
     docs = text_splitter.split_documents(documents)
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     retriever_llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+    pinecone = Pinecone(api_key=os.environ['PINECONE_API_KEY'])
     
-    pinecone.init(
-    api_key= os.getenv('PINECONE_API_KEY'),
-    )
+    
 
     index_name = 'temp'
 
-    if index_name not in pinecone.list_indexes():
+    if index_name not in pinecone.list_indexes().names():
         # Create new Index
-        pinecone.create_index(name=index_name, metric="cosine", dimension=768)
-        docsearch = Pinecone.from_documents(docs, embeddings, index_name=index_name)
+        pinecone.create_index(name=index_name, metric="cosine", dimension=768, spec=ServerlessSpec(cloud="aws", region="us-east-1"))
+        docsearch = pinecone.from_documents(docs, embeddings, index_name=index_name)
     else:
         # Link to the existing index
-        docsearch = Pinecone.from_existing_index(index_name, embeddings)
+        docsearch = pinecone.Index(index_name, embeddings=embeddings)
+    
+    vector_store = PineconeVectorStore(index=docsearch, embeddings=embeddings)
+    
+    user_query = st.chat_input("Type your message here...")
 
-    from langchain import PromptTemplate
+    from langchain_core.prompts import PromptTemplate
 
     template = """
     You are a fortune teller. These Human will ask you a questions about their life. 
@@ -60,12 +63,7 @@ if web_submit:
     input_variables=["context", "question"]
     )
 
-#     retriever = SelfQueryRetriever.from_llm(
-#     retriever_llm, vectorstore)
-
-#     retriever.invoke("What's new in tennis")
-#     st.write("Message")
-#     #message = st.chat_input("Your message")
+    message = st.chat_input("Your message")
 
 
 
