@@ -39,4 +39,4 @@ async def websocket_endpoint(websocket: WebSocket):
         manager.disconnect(websocket)
         print("Client disconnected")
     except Exception as e:
-        await websocket.send_json({"message": f"Error: {e}"})
+        await websocket.send_json({"message": f"Error: {e}"}) 
