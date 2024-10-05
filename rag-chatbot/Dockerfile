@@ -1,4 +1,4 @@
-FROM python:3.9-bookwork as builder
+FROM python:3.9-bookworm as builder
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
