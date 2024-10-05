@@ -10,7 +10,7 @@ pipeline {
             quoteValue: false,
             type: 'PT_MULTI_SELECT',
             value: 'api-gateway,discovery-server,profile-api,chat-api,rag-api,rag-chatbot,ui',
-            visibleItemCount: 6
+            visibleItemCount: 7
         )
     }
     environment {
