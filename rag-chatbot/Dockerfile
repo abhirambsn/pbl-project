@@ -18,7 +18,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH="/root/.local/bin:$PATH"
 
 RUN apt-get update && \
-    apt-get install --no-cache linux-headers-$(uname -r) && \
+    apt-get install linux-headers-$(uname -r) && \
     apt-get clean
 
 WORKDIR /app
