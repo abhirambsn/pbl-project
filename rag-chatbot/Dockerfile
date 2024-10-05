@@ -4,7 +4,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-RUN apk add --no-cache build-base linux-headers
+RUN apk add --no-cache build-base linux-headers cmake
 
 COPY ./requirements.txt /tmp
 RUN pip install --user --no-cache-dir -r /tmp/requirements.txt
