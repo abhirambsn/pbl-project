@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && \
-    apt-get -y install build-essential linux-headers-$(uname -r) cmake && \
+    apt-get -y install build-essential cmake && \
     apt-get clean
 
 COPY ./requirements.txt /tmp
@@ -18,7 +18,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PATH="/root/.local/bin:$PATH"
 
 RUN apt-get update && \
-    apt-get install linux-headers-$(uname -r) && \
+    apt-get install build-essential && \
     apt-get clean
 
 WORKDIR /app
