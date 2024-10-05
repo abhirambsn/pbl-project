@@ -3,13 +3,13 @@ pipeline {
     parameters {
         choice(name: 'build-env', choices: ['prod', 'pre-prod'], description: 'Select the environment of the build')
         extendedChoice(
-            defaultValue: 'api-gateway,discovery-server,profile-api,chat-api,rag-api,ui',
+            defaultValue: 'api-gateway,discovery-server,profile-api,chat-api,rag-api,rag-chatbot,ui',
             description: 'Select the modules to build',
             multiSelectDelimiter: ',',
             name: 'modules-to-build',
             quoteValue: false,
             type: 'PT_MULTI_SELECT',
-            value: 'api-gateway,discovery-server,profile-api,chat-api,rag-api,ui',
+            value: 'api-gateway,discovery-server,profile-api,chat-api,rag-api,rag-chatbot,ui',
             visibleItemCount: 6
         )
     }
@@ -111,11 +111,32 @@ pipeline {
                             deactivate
                             rm -rf /tmp/venv
                             '''
+                        } else if (module == 'rag-chatbot') {
+                            sh '''
+                            python3 -m venv /tmp/venv
+                            . /tmp/venv/bin/activate
+                            cd rag-chatbot && pip install --no-cache -r requirements.txt && pytest src/tests
+                            deactivate
+                            rm -rf /tmp/venv
+                            '''
                         } else {
                             sh "cd ${module} && ./mvnw test"
                         }
                     }
                 }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            when {
+                expression {
+                    env.MODULES_TO_BUILD != null
+                }
+            }
+
+            def scannerHome = tool 'SonarScanner'
+            withSonarQubeEnv() {
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
 
@@ -133,7 +154,7 @@ pipeline {
 
                         if (module == 'ui') {
                             sh "cd ${module} && docker build -t ${REGISTRY}/${REGISTRY_USERNAME}/pbl-${module}:${DOCKER_TAG} ."
-                        } else if (module == 'rag-api') {
+                        } else if (module == 'rag-api' || module == 'rag-chatbot') {
                             sh "cd ${module} && docker build -t ${REGISTRY}/${REGISTRY_USERNAME}/pbl-${module}:${DOCKER_TAG} ."
                         } else {
                             sh "cd ${module} && ./mvnw -DskipTests package"

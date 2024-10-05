@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from db import engine, Base
-from controller import KnowledgeBaseController, ActuatorController
+from controller import KnowledgeBaseController, ActuatorController, QueryController
 from middleware import LoggingMiddleware
 import py_eureka_client.eureka_client as eureka_client
 from contextlib import asynccontextmanager
@@ -60,4 +60,5 @@ def create_app() -> FastAPI:
     app.add_middleware(LoggingMiddleware)
     app.include_router(ActuatorController.router)
     app.include_router(KnowledgeBaseController.router)
+    app.include_router(QueryController.router)
     return app

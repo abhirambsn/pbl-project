@@ -3,18 +3,7 @@ from fastapi.responses import JSONResponse
 from typing import Annotated, Union
 from repository.KnowledgeBaseRepository import KnowledgeBaseRepository
 from dto.KnowledgeBase import KnowledgeBaseCreate, KnowledgeBase as KnowledgeBaseResponse
-
-from db import SessionLocal
-
-
-async def get_kb_repo():
-    db = SessionLocal()
-    try:
-        knowledgeBaseRepository = KnowledgeBaseRepository(db)
-        yield knowledgeBaseRepository
-    except:
-        db.close()
-        raise
+from util.InjectDB import get_kb_repo
 
 router = APIRouter()
 
@@ -34,7 +23,7 @@ async def get_kb(kb_id: str, knowledgeBaseRepository: Annotated[KnowledgeBaseRep
     kb = knowledgeBaseRepository.findById(kb_id)
     if not kb:
         return JSONResponse({"success": False, "status": 404, "body": f"Knowledge Base with requested id: {kb_id} not found"})
-    kb_parsed = KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, createdBy=kb.createdBy).model_dump()
+    kb_parsed = KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, urls=kb.urls, slug=kb.slug, createdBy=kb.createdBy).model_dump()
     return JSONResponse({"success": True, "status": 200, "body": kb_parsed})
 
 @router.put("/{kb_id}")

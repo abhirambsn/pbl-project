@@ -4,6 +4,7 @@ from pydantic import BaseModel, ConfigDict
 class KnowledgeBase_Base(BaseModel):
     name: str
     files: List[str]
+    urls: List[str]
 
 class KnowledgeBaseCreate(KnowledgeBase_Base):
     pass

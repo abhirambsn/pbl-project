@@ -1,0 +1,170 @@
+# pip install streamlit langchain lanchain-openai beautifulsoup4 python-dotenv chromadb
+
+# from langchain_core.messages import AIMessage, HumanMessage
+from langchain_community.document_loaders import RecursiveUrlLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import Chroma
+from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from dotenv import load_dotenv
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.chains.history_aware_retriever import create_history_aware_retriever
+from langchain.chains.retrieval import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_pinecone import PineconeVectorStore
+from dto.Query import Query
+from dto.QueryResponse import QueryResponse
+import requests, os, time
+from typing import List
+from fastapi import FastAPI, WebSocket
+from pinecone import Pinecone, ServerlessSpec
+from uuid import uuid4
+
+load_dotenv()
+
+pc = Pinecone(api_key=os.getenv('PINECONE_API_KEY'))
+
+async def get_chat_history(chat_id: str, dev: bool = True):
+    if dev:
+        return []
+    response = requests.get(f"{os.getenv('CHAT_SERVICE_URL')}/chat/{chat_id}")
+    return response.json()
+
+async def create_or_get_index(index_name: str) -> str:
+    if index_name not in pc.list_indexes().names():
+        print(f"Creating index {index_name}")
+        pc.create_index(name=index_name, metric="cosine", dimension=768, spec=ServerlessSpec(cloud="aws", region="us-east-1"))
+    else:
+        print(f"Index {index_name} already exists")
+    return index_name
+
+async def fetch_website_data_to_store(vector_store: PineconeVectorStore, urls: List[str], chat_id: str):
+    loader = RecursiveUrlLoader(urls)
+    document = loader.load()
+
+    text_splitter = RecursiveCharacterTextSplitter()
+    document_chunks = text_splitter.split_documents(document)
+
+    ids = [str(uuid4()) for _ in range(len(document_chunks))]
+    vector_store.add_documents(document_chunks, ids=ids) 
+
+async def get_vectorstore(chat_id: str):
+    index_name = await create_or_get_index(chat_id)
+    vector_store = PineconeVectorStore.from_existing_index(index_name=index_name, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
+
+    return vector_store
+
+def get_context_retriever_chain(vector_store):
+    llm = ChatGoogleGenerativeAI(model='gemini-1.5-flash')
+    
+    retriever = vector_store.as_retriever()
+    
+    prompt = ChatPromptTemplate.from_messages([
+      MessagesPlaceholder(variable_name="chat_history"),
+      ("user", "{input}"),
+      ("user", "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation")
+    ])
+    
+    retriever_chain = create_history_aware_retriever(llm, retriever, prompt)
+    
+    return retriever_chain
+    
+def get_conversational_rag_chain(retriever_chain): 
+    
+    llm = ChatGoogleGenerativeAI(model='gemini-1.5-flash')
+    
+    prompt = ChatPromptTemplate.from_messages([
+      ("system", "Answer the user's questions based on the below context:\n\n{context}"),
+      MessagesPlaceholder(variable_name="chat_history"),
+      ("user", "{input}"),
+    ])
+    
+    stuff_documents_chain = create_stuff_documents_chain(llm,prompt)
+    
+    return create_retrieval_chain(retriever_chain, stuff_documents_chain)
+
+def get_response(vector_store: PineconeVectorStore, user_input: str, chat_history: List[str]):
+    retriever_chain = get_context_retriever_chain(vector_store)
+    conversation_rag_chain = get_conversational_rag_chain(retriever_chain)
+    
+    response = conversation_rag_chain.stream({
+        "chat_history": chat_history,
+        "input": user_input
+    })
+    
+    return response
+
+async def parse_single_respons(request, response):
+    print(f"Sending: {response.get('answer')}")
+    return QueryResponse.make_response(request.id, answer=response.get('answer'), message=None)
+
+# async def get_answer_to_user_query(request: Query):
+#     # start_time = time.time()
+#     vector_store = await get_vectorstore_from_url(request.urls, request.chat_id)
+#     if (request.chat_id is not None):
+#         chat_history = await get_chat_history(request.chat_id)
+#     else:
+#         chat_history = []
+#     responses = get_response(vector_store, request.text, chat_history)
+#     # end_time = time.time()
+#     # duration = round(end_time - start_time, 2)
+#     # response = QueryResponse.make_response(request.id, response, duration)
+#     return responses
+
+
+async def send_answer(websocket: WebSocket, request: Query):
+    start = time.time()
+    print(f"Fetching vector store from {request.chat_id}")
+    vector_store = await get_vectorstore(request.chat_id)
+    if request.needsUpdate:
+        print(f"Fetching website data to store")
+        await fetch_website_data_to_store(vector_store, request.urls, request.chat_id)
+    print(f"Fetching retriever chain")
+    retriever_chain = get_context_retriever_chain(vector_store)
+    print(f"Fetching conversational rag chain")
+    conversation_rag_chain = get_conversational_rag_chain(retriever_chain)
+    if (request.chat_id is not None):
+        print(f"Fetching chat history for chat_id {request.chat_id}")
+        chat_history = await get_chat_history(request.chat_id)
+    else:
+        chat_history = []
+
+
+    print("Querying Model for answer")
+    response = await conversation_rag_chain.ainvoke({
+        "chat_history": chat_history,
+        "input": request.text
+    })
+    end = time.time()
+    duration = round(end - start, 2)
+    query_response = QueryResponse.make_response(request.id, duration=duration, answer=response.get('answer'), message=None, done=True)
+    await websocket.send_json(query_response.to_json())
+
+app = FastAPI()
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+    
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+    
+    async def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(websocket)
+    
+    async def send_response(self, payload: str, websocket: WebSocket):
+        await websocket.send_json(payload)
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_json()
+        request = Query.parse_json(data)
+        print(f"Received request: {request}")
+        # responses = await get_answer_to_user_query(request)
+        # for response in responses:
+        #     parsed_response = await parse_single_respons(request, response)
+        #     await websocket.send_json(parsed_response.to_json())
+        # await websocket.send_json(response.to_json())
+        await send_answer(websocket, request)

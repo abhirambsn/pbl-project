@@ -1,5 +1,5 @@
 from db import Base
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, ARRAY
+from sqlalchemy import Column, String
 
 class File(Base):
     __tablename__ = "files"
