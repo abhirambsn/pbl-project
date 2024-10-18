@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-api-deployment
+  labels:
+    app: profile-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile-api
+  template:
+    metadata:
+      labels:
+        app: profile-api
+    spec:
+      containers:
+      - name: profile-api-container
+        image: ghcr.io/abhirambsn/pbl-profile-api:latest
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: "docker"
+          - name: EUREKA_USERNAME
+            value: "eureka"
+          - name: EUREKA_PASSWORD
+            value: "password"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-api
+spec:
+  type: ClusterIP
+  selector:
+    app: profile-api
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080

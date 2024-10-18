@@ -4,7 +4,7 @@ docker run \
   --rm \
   --detach \
   --privileged \
-  --network jenkins \
+  --network deployment \
   --network-alias docker \
   --env DOCKER_TLS_CERTDIR=/certs \
   --volume jenkins-docker-certs:/certs/client \
@@ -17,7 +17,7 @@ docker run \
     --name pbl-jenkins \
     --restart=on-failure \
     --detach \
-    --network jenkins \
+    --network deployment \
     --env DOCKER_HOST=tcp://docker:2376 \
     --env DOCKER_CERT_PATH=/certs/client \
     --env DOCKER_TLS_VERIFY=1 \
@@ -29,5 +29,6 @@ docker run \
 docker run --name='mailcatcher' -d \
   --publish=1080:1080 \
   --publish=1025:1025 \
-  --network jenkins \
+  --restart=on-failure \
+  --network deployment \
 dockage/mailcatcher:latest
