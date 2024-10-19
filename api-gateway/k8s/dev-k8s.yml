@@ -24,6 +24,10 @@ spec:
             value: "eureka"
           - name: EUREKA_PASSWORD
             value: "password"
+          - name: JWT_ISSUER_URI
+            value: "http://keycloak.localhost.localstack.cloud:8081/realms/pbl-api"
+          - name: JWT_JWK_SET_URI
+            value: "http://keycloak:8080/realms/pbl-api/protocol/openid-connect/certs"
         ports:
         - containerPort: 8080
         livenessProbe:

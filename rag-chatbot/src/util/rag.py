@@ -1,7 +1,7 @@
 from langchain_pinecone import PineconeVectorStore
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from dto.Query import Query
-from dto.QueryResponse import QueryResponse
+from ..dto.Query import Query
+from ..dto.QueryResponse import QueryResponse
 from typing import List
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
@@ -11,7 +11,7 @@ from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_pinecone import PineconeVectorStore
 from pinecone import Pinecone, ServerlessSpec
-from util import WebsitePineconeLoader
+from ..util import WebsitePineconeLoader
 from fastapi import WebSocket
 import time
 import requests

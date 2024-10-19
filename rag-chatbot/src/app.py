@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from typing import List
-from dto import Query, QueryType
-from util import RetrievalAugmentedGenerator
+from .dto import Query, QueryType
+from .util import RetrievalAugmentedGenerator
 
 app = FastAPI()
 

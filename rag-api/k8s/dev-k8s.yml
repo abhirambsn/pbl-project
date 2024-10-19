@@ -16,7 +16,7 @@ metadata:
   labels:
     app: rag-api
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: rag-api
@@ -30,7 +30,17 @@ spec:
         image: ghcr.io/abhirambsn/pbl-rag-api:latest
         env:
           - name: PG_DB_URL
-            value: "postgresql://postgres.evwsikopkgaovexixibu:xIzgap-gajri3-sujxox@aws-0-ap-south-1.pooler.supabase.com:6543/postgres"
+            valueFrom:
+              secretKeyRef:
+                name: pg-db-url
+                key: pg-db-url
+          - name: EUREKA_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: eureka-server
+                key: eureka-server
+          - name: BOT_SOCKET_URL
+            value: "http://rag-chatbot:8000"
         ports:
         - containerPort: 8000
         volumeMounts:
