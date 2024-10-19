@@ -23,6 +23,11 @@ spec:
               secretKeyRef:
                 name: pinecone-api-key
                 key: pinecone-api-key
+          - name: GOOGLE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: google-api-key
+                key: google-api-key
           - name: CHAT_SERVICE_URL
             value: "http://chat-api:8080"
         ports:
