@@ -36,7 +36,8 @@ async def lifespan(app: FastAPI):
         await eureka_client.init_async(
             eureka_server=os.getenv("EUREKA_SERVER"),
             app_name="rag-api",
-            instance_port=8000
+            instance_port=8000,
+            instance_host="rag-api"
         )
 
 
