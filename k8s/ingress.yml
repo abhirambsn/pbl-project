@@ -17,3 +17,27 @@ spec:
             name: api-gateway
             port:
               number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  tls:
+    - hosts:
+      - keycloak.localhost.localstack.cloud
+      secretName: ls-secret-tls
+  rules:
+  - host: keycloak.localhost.localstack.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: keycloak
+            port:
+              number: 8080
