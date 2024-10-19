@@ -15,12 +15,18 @@ spec:
       labels:
         app: keycloak
     spec:
+      imagePullSecrets:
+        - name: ghcr
       containers:
       - name: keycloak
-        image: quay.io/keycloak/keycloak:23.0.6
+        image: ghcr.io/abhirambsn/pbl-keycloak:latest
         command: 
           - "/opt/keycloak/bin/kc.sh"
           - "start"
+          - "--hostname"
+          - "http://keycloak.localhost.localstack.cloud:8081"
+          - "--hostname-backchannel-dynamic"
+          - "true"
         ports:
         - containerPort: 8080
         env:
@@ -36,10 +42,6 @@ spec:
           value: "dev-postgres"
         - name: KC_DB_PASSWORD
           value: "dev-postgres"
-        - name: KC_HOSTNAME
-          value: "localhost"
-        - name: KC_HOSTNAME_PORT
-          value: "10000"
         - name: KC_HTTP_ENABLED
           value: "true"
         - name: KC_HEALTH_ENABLED
@@ -50,11 +52,10 @@ kind: Service
 metadata:
   name: keycloak
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: keycloak
   ports:
   - protocol: TCP
     port: 8080
     targetPort: 8080
-    nodePort: 32002
