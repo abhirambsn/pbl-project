@@ -15,7 +15,7 @@ async def create_kb(kb: KnowledgeBaseCreate, knowledgeBaseRepository: Annotated[
 @router.get("/")
 async def get_all_kb(knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], skip: Union[int, None] = 0, limit: Union[int, None] = 10):
     kbs = knowledgeBaseRepository.findAll(skip, limit)
-    kbs_parsed = [KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, createdBy=kb.createdBy).model_dump() for kb in kbs]
+    kbs_parsed = [KnowledgeBaseResponse(id=kb.id, name=kb.name, files=kb.files, slug=kb.slug, urls=kb.urls, createdBy=kb.createdBy).model_dump() for kb in kbs]
     return JSONResponse({"success": True, "body": kbs_parsed, "status": 200, "limit": limit, "offset": skip}, 200)
 
 @router.get("/{kb_id}")

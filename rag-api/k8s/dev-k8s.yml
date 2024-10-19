@@ -40,7 +40,7 @@ spec:
                 name: eureka-server
                 key: eureka-server
           - name: BOT_SOCKET_URL
-            value: "http://rag-chatbot:8000"
+            value: "ws://rag-chatbot:8000/ws"
         ports:
         - containerPort: 8000
         volumeMounts:
