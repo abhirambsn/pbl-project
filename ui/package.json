@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "test": "vitest",
-    "coverage": "npm test --coverage --watchAll --collectCoverageFrom='src/components/**/*.{ts,tsx}'",
+    "test:dev": "vitest",
+    "test": "vitest run",
+    "coverage": "npm test --coverage --collectCoverageFrom='src/components/**/*.{ts,tsx}'",
     "lint": "eslint .",
     "preview": "vite preview"
   },
