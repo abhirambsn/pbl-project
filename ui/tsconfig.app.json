@@ -21,7 +21,11 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./src",
     "paths": {
-      "@components/*": ["components/*"]
+      "@components/*": ["components/*"],
+      "@store/*": ["store/*"],
+      "@utils/*": ["utils/*"],
+      "@service/*": ["service/*"],
+      "@interfaces/*": ["interfaces/*"]
     }
   },
   "include": ["src", "./jest.setup.ts"]
