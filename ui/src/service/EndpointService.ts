@@ -9,11 +9,10 @@ export class EndpointService {
     constructor() {
         this.hostUrl = import.meta.env.VITE_API_HOST || '';
         this.baseUrl = `${this.hostUrl}/api/v1`;
-        this.defaultHeaders = {
-            'Content-Type': 'application/json'
-        }
+        this.defaultHeaders = {}
         this.client = axios.create({
             baseURL: this.baseUrl,
+            withCredentials: false
         })
     }
 
