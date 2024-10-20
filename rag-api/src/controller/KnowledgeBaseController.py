@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.post("/")
 async def create_kb(kb: KnowledgeBaseCreate, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)]):
-    kb_id = knowledgeBaseRepository.save(kb, "test_user")
+    kb_id = knowledgeBaseRepository.save(kb, kb.createdBy)
     return JSONResponse({"success": True, "status": 201, "body": {"id": kb_id}}, 201)
 
 @router.get("/")

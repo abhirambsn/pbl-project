@@ -1,0 +1,12 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: profile-api
+build:
+  artifacts:
+    - image: ghcr.io/abhirambsn/pbl-profile-api
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - k8s/dev-k8s.yml
