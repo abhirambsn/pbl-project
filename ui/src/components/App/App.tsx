@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { QueueService } from '@service/QueueService';
 import AuthenticationService from '@service/AuthenticationService';
 import './App.css'
 import { useAuthStore } from '@store/auth-store';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = React.useState(0);
   const authState = useAuthStore();
   const queueSvc = new QueueService();
 

@@ -28,5 +28,5 @@
       "@interfaces/*": ["interfaces/*"]
     }
   },
-  "include": ["src", "./jest.setup.ts"]
+  "include": ["src"]
 }

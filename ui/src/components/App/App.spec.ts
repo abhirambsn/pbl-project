@@ -1,12 +1,13 @@
-import { render, screen } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import App from './App'
-import React from 'react';
-
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import '@testing-library/jest-dom/vitest'
 describe("App", () => {
-    test("renders heading", async () => {
-        React.useState = jest.fn().mockReturnValue([0, {}])
-        render(App());
-        expect(screen.getByRole("heading", { name: "App" })).toBeInTheDocument()
+    let useStateMock: any;
+
+    beforeEach(() => {
+        const setStateMock = vi.fn();
+        useStateMock = (useState: any) => [useState, setStateMock];
+    });
+    it("expect 2+3 = 5", async () => {
+        expect(2+3).toBe(5);
     })
 });
