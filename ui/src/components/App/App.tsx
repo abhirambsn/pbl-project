@@ -42,7 +42,7 @@ function App() {
     return () => clearInterval(interval);
   }, [authState.isAuthenticated]);
 
-  useState(() => {
+  useEffect(() => {
     if (!authState.isAuthenticated) return;
     kbSvc.getKnowledgeBasesOfCurrentUser().then((data) => {
       console.log('DEBUG: knowledge bases', data);
