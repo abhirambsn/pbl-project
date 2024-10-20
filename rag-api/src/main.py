@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from db import engine, Base
 from controller import KnowledgeBaseController, ActuatorController, QueryController
 from middleware import LoggingMiddleware
@@ -56,17 +55,9 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Error registering with Eureka: {e}")
 
-origins = ["*"]
-
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
     app.add_middleware(LoggingMiddleware)
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=origins,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
     app.include_router(ActuatorController.router)
     app.include_router(KnowledgeBaseController.router)
     app.include_router(QueryController.router)
