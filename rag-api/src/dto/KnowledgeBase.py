@@ -7,6 +7,7 @@ class KnowledgeBase_Base(BaseModel):
     urls: List[str]
 
 class KnowledgeBaseCreate(KnowledgeBase_Base):
+    createdBy: str
     pass
 
 class KnowledgeBase(KnowledgeBase_Base):

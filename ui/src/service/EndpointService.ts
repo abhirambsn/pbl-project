@@ -19,6 +19,7 @@ export class EndpointService {
 
     private buildEndpoint(endpoint: string, params: any[]) {
         let url = `${this.baseUrl}${endpoint}`;
+        if (!params.length) return url;
         const query = new URLSearchParams();
         params.forEach((param) => {
             query.append(param.key, param.value);
