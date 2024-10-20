@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { QueueService } from '@service/QueueService';
 import AuthenticationService from '@service/AuthenticationService';
 import './App.css'
