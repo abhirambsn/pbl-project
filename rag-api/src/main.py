@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from db import engine, Base
 from controller import KnowledgeBaseController, ActuatorController, QueryController
 from middleware import LoggingMiddleware
@@ -58,6 +59,13 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(lifespan=lifespan)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_headers=["*"],
+    )
     app.add_middleware(LoggingMiddleware)
     app.include_router(ActuatorController.router)
     app.include_router(KnowledgeBaseController.router)
