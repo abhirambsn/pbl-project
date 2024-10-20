@@ -38,7 +38,7 @@ jobs:
         
         - name: Run Tests
           working-directory: ui
-          run: npm test -- --watchAll=false
+          run: npm test
         
   docker-build:
     runs-on: ubuntu-latest
