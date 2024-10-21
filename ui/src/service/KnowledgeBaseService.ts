@@ -1,21 +1,5 @@
-import { EndpointService } from "./EndpointService";
-
-export class KnowledgeBaseService {
-    endpointService: EndpointService;
-    tokenValue: string;
-
-    constructor() {
-        this.endpointService = new EndpointService();
-        this.tokenValue = '';
-    }
-
-    set token(token: string) {
-        this.tokenValue = token;
-    }
-
-    get token() {
-        return this.tokenValue;
-    }
+import { BaseService } from "./BaseService";
+export class KnowledgeBaseService extends BaseService {
 
     async getKnowledgeBasesOfCurrentUser() {
         const metaData: ApiRequestMetadata = {
@@ -27,8 +11,12 @@ export class KnowledgeBaseService {
         }
 
         try {
-            const response = await this.endpointService.sendRequest(metaData);
-            return response?.data;
+            const response = await this.endpointService.sendRequest<KnowledgeBaseList>(metaData);
+            if (!response) {
+                console.error('DEBUG: no response from server');
+                return;
+            }
+            return response.body;
         } catch (err) {
             console.error('DEBUG: error getting knowledge bases', err);
         }
@@ -53,7 +41,11 @@ export class KnowledgeBaseService {
 
         try {
             const response = await this.endpointService.sendRequest(metaData);
-            return response?.data;
+            if (!response) {
+                console.error('DEBUG: no response from server');
+                return;
+            }
+            return response.body;
         } catch (err) {
             console.error('DEBUG: error creating knowledge base', err);
         }

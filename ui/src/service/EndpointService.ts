@@ -1,22 +1,20 @@
-import axios, { Axios } from 'axios';
+import axios, { Axios, AxiosResponse } from 'axios';
 
 export class EndpointService {
     hostUrl: string;
     baseUrl: string;
     client: Axios;
-    defaultHeaders: any;
 
     constructor() {
         this.hostUrl = import.meta.env.VITE_API_HOST || '';
         this.baseUrl = `${this.hostUrl}/api/v1`;
-        this.defaultHeaders = {}
         this.client = axios.create({
             baseURL: this.baseUrl,
             withCredentials: false
         })
     }
 
-    private buildEndpoint(endpoint: string, params: any[]) {
+    private buildEndpoint(endpoint: string, params: Array<{ key: string, value: string }>): string {
         let url = `${this.baseUrl}${endpoint}`;
         if (!params.length) return url;
         const query = new URLSearchParams();
@@ -27,29 +25,33 @@ export class EndpointService {
         return url;
     }
 
-    async sendRequest(metaData: ApiRequestMetadata) {
+    async sendRequest<T>(metaData: ApiRequestMetadata): Promise<ResponseEntity<T> | null> {
         const { method } = metaData;
-        const headers = {
-            ...this.defaultHeaders,
-            ...(metaData.headers || {})
-        };
+        const headers = metaData.headers || {}
         const params = metaData.params || [];
         const data = metaData.data || {};
 
         const url = this.buildEndpoint(metaData.endpoint, params);
+        let response: AxiosResponse<ResponseEntity<T>>;
 
         switch (method) {
             case 'GET':
-                return await this.client.get(url, { headers });
+                response = await this.client.get(url, { headers });
+                break;
             case 'POST':
-                return await this.client.post(url, data, { headers });
+                response = await this.client.post(url, data, { headers });
+                break;
             case 'PUT':
-                return await this.client.put(url, data, { headers });
+                response = await this.client.put(url, data, { headers });
+                break;
             case 'DELETE':
-                return await this.client.delete(url, { headers });
+                response = await this.client.delete(url, { headers });
+                break;
             default:
                 console.error('DEBUG: invalid method');
-                break;
+                return null;
         }
+        console.log('DEBUG: response', response);
+        return response.data as ResponseEntity<T>;
     }
 }
