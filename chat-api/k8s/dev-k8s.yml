@@ -24,6 +24,10 @@ spec:
             value: "eureka"
           - name: EUREKA_PASSWORD
             value: "password"
+          - name: MONGO_USERNAME
+            value: "admin"
+          - name: MONGO_PASSWORD
+            value: "admin"
         ports:
         - containerPort: 8080
 ---
