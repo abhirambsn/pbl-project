@@ -23,7 +23,6 @@ import {
   CogIcon,
   Database,
   LogOutIcon,
-  MessageCircle,
   MessageCircleMoreIcon,
   Plus,
   User2,
@@ -35,6 +34,7 @@ import { SIDEBAR_CHATS } from "@/utils/constants";
 import { useAuthStore } from "@/store/auth-store";
 import { useModalStore } from "@/store/modal-store";
 import CreateChatForm from "./create-chat-form";
+import ChatMenuItem from "./chat-menu-item";
 
 const MainSidebar = () => {
   const { theme } = useTheme();
@@ -57,7 +57,7 @@ const MainSidebar = () => {
     <Sidebar>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem onClick={() => navigate("/")}>
             <div className="p-1 w-full flex items-center gap-3 hover:cursor-pointer">
               <MessageCircleMoreIcon
                 size={24}
@@ -97,13 +97,7 @@ const MainSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {SIDEBAR_CHATS.map((chat) => (
-                <SidebarMenuButton
-                  key={chat.id}
-                  onClick={() => navigate(`/chat/${chat.id}`)}
-                >
-                  <MessageCircle />
-                  <span>{chat.title}</span>
-                </SidebarMenuButton>
+                <ChatMenuItem key={chat.id} chat={chat} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>

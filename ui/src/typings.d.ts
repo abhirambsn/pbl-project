@@ -49,3 +49,15 @@ type MyNotification = {
   description: string;
   type: string;
 };
+
+type ChatMetadata = {
+  id: string;
+  title: string;
+};
+
+type Message = {
+  _id: string;
+  message: string;
+  senderType: string;
+  createdOn: Date | null;
+};

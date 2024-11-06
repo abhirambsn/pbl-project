@@ -24,7 +24,7 @@ const MainNavbar = ({ SidebarTrigger }: NavbarProps) => {
     };
   }, [addNotification, clearNotifications]);
   return (
-    <nav className="flex items-center p-2.5 gap-4 bg-sidebar">
+    <nav className="flex items-center p-2 gap-4 bg-sidebar">
       <SidebarTrigger />
       <div className="flex-1"></div>
       <Popover>

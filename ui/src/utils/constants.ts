@@ -50,3 +50,27 @@ export const NOTIFICATIONS = [
     type: "error",
   },
 ];
+
+export const MESSAGES = [
+  {
+    _id: "67152a40f45df70e16247e7a",
+    message: "Hi",
+    senderType: "USER",
+    createdOn: null,
+    version: 0,
+  },
+  {
+    _id: "67152a40f45df70e16247e7a",
+    message: "Hello",
+    senderType: "BOT",
+    createdOn: null,
+    version: 0,
+  },
+  {
+    _id: "67152a40f45df70e16247e7a",
+    message: "Good Morning",
+    senderType: "USER",
+    createdOn: null,
+    version: 0,
+  },
+];
