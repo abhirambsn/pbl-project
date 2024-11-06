@@ -26,9 +26,11 @@ const DashboardPage = () => {
           ConvoBot
         </span>
       </div>
-      <p className="text-primary">
-        Welcome back, {authState.userDetails?.firstName} choose a chat to
-        continue conversation or use a new chat
+      <p className="text-primary text-center flex flex-col gap-2">
+        <span>
+          Welcome back, <strong>{authState.userDetails?.firstName}</strong>.
+        </span>
+        <span>Choose a chat to continue conversation or create a new chat</span>
       </p>
     </section>
   );

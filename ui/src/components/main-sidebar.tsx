@@ -35,10 +35,11 @@ import { useAuthStore } from "@/store/auth-store";
 import { useModalStore } from "@/store/modal-store";
 import CreateChatForm from "./create-chat-form";
 import ChatMenuItem from "./chat-menu-item";
+import AuthenticationService from "@/service/AuthenticationService";
 
 const MainSidebar = () => {
   const { theme } = useTheme();
-  const { userDetails } = useAuthStore();
+  const { userDetails, clear } = useAuthStore();
   const { onOpen, setCustomFormComponent, setSubtitle, setTitle } =
     useModalStore();
   useEffect(() => {
@@ -125,7 +126,10 @@ const MainSidebar = () => {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={() => console.log("Logging out...")}
+                  onClick={async () => {
+                    await AuthenticationService.logout();
+                    clear();
+                  }}
                   className="text-red-500"
                 >
                   <LogOutIcon />
