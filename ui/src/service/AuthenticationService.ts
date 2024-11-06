@@ -13,6 +13,7 @@ export class AuthenticationService {
         this.keycloak = new Keycloak(keycloakOptions);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     async initKeycloak(onAuthenticatedCallback: Function) {
         try {
             const authenticated = await this.keycloak.init({ onLoad: 'check-sso' });
@@ -57,9 +58,13 @@ export class AuthenticationService {
         return this.keycloak.authenticated;
     }
 
+    getExpiresAt() {
+        return this.keycloak.authenticated ? this.keycloak.tokenParsed?.exp : -1;
+    }
+
     async refreshToken() {
         try {
-            const refreshed = await this.keycloak.updateToken(1000);
+            const refreshed = await this.keycloak.updateToken(20*60*1000);
             if (refreshed) {
                 console.log('DEBUG: token refreshed');
             }

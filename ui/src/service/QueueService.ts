@@ -16,9 +16,9 @@ export class QueueService {
         }); 
     }
 
-    private processMessages(messages: Array<Message>): any {
+    private processMessages(messages: Array<Message>): unknown {
         console.log('messages', messages);
-        let result: any = [];
+        const result: unknown[] = [];
         messages.forEach((message) => {
             try {
                 const body = JSON.parse(message.Body || '');
