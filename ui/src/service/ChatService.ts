@@ -1,3 +1,4 @@
+import { ApiRequestMetadata } from "@/typings";
 import { BaseService } from "./BaseService";
 
 export class ChatService extends BaseService {
@@ -74,6 +75,27 @@ export class ChatService extends BaseService {
             return response.body;
         } catch (err) {
             console.error('DEBUG: error creating message', err);
+        }
+    }
+
+    async getAllChats(user_id: string) {
+        const metaData: ApiRequestMetadata = {
+            method: 'GET',
+            endpoint: `${user_id}/chats`,
+            headers: {
+                'Authorization': `Bearer ${this.token}`
+            }
+        }
+
+        try {
+            const response = await this.endpointService.sendRequest(metaData);
+            if (!response) {
+                console.error('DEBUG: no response from server');
+                return;
+            }
+            return response.body;
+        } catch (err) {
+            console.error('DEBUG: error getting all chats', err);
         }
     }
 }

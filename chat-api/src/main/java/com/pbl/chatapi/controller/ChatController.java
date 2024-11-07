@@ -4,6 +4,7 @@ import com.pbl.chatapi.dto.NewChatMessage;
 import com.pbl.chatapi.dto.JsonResponse;
 import com.pbl.chatapi.dto.NewChatMetadata;
 import com.pbl.chatapi.models.ChatMessage;
+import com.pbl.chatapi.models.ChatMetadata;
 import com.pbl.chatapi.service.ChatService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,6 +44,16 @@ public class ChatController {
         return JsonResponse.makeResponse(
                 HttpStatus.OK,
                 messages,
+                true
+        );
+    }
+
+    @GetMapping("/{user_id}/chats")
+    public ResponseEntity<JsonResponse<List<ChatMetadata>>> getAllChats(@PathVariable String user_id) {
+        List<ChatMetadata> chats = chatService.getAllChats(user_id);
+        return JsonResponse.makeResponse(
+                HttpStatus.OK,
+                chats,
                 true
         );
     }

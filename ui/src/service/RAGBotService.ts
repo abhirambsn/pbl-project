@@ -1,3 +1,4 @@
+import { ApiRequestMetadata } from "@/typings";
 import { BaseService } from "./BaseService";
 
 export class RAGBotService extends BaseService {
