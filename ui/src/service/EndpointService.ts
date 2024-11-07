@@ -1,3 +1,4 @@
+import { ApiRequestMetadata, ResponseEntity } from '@/typings';
 import axios, { Axios, AxiosResponse } from 'axios';
 
 export class EndpointService {

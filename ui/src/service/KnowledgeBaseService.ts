@@ -1,3 +1,4 @@
+import { ApiRequestMetadata, KnowledgeBaseList } from "@/typings";
 import { BaseService } from "./BaseService";
 export class KnowledgeBaseService extends BaseService {
 

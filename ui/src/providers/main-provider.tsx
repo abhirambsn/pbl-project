@@ -75,7 +75,12 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
   }, [queueService, knowledgeBaseService, chatService]);
 
   useEffect(() => {
-    if (!authState.isAuthenticated || !queueService || !knowledgeBaseService)
+    if (
+      !authState.isAuthenticated ||
+      !queueService ||
+      !knowledgeBaseService ||
+      !chatService
+    )
       return;
     const interval = setInterval(() => {
       console.log("DEBUG: polling for messages");
@@ -83,9 +88,10 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
     }, 30000);
 
     knowledgeBaseService.token = authState.token;
+    chatService.token = authState.token;
 
     return () => clearInterval(interval);
-  }, [authState, knowledgeBaseService, queueService]);
+  }, [authState, knowledgeBaseService, queueService, chatService]);
 
   useEffect(() => {
     if (!authState.isAuthenticated || !knowledgeBaseService) return;
@@ -99,6 +105,19 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
         authState.clear();
       });
   }, [authState, knowledgeBaseService]);
+
+  useEffect(() => {
+    if (!authState.isAuthenticated || !chatService) return;
+    chatService
+      .getAllChats("test_user")
+      .then((data) => {
+        console.log("DEBUG: chats", data);
+      })
+      .catch((err) => {
+        console.error(err);
+        authState.clear();
+      });
+  }, [authState, chatService]);
 
   return (
     <MainContext.Provider
