@@ -5,7 +5,7 @@ type ApiRequestMetadata = {
   endpoint: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   data?: unknown;
-  params?: Record<string, string | number>;
+  params?: { key: string; value: string }[];
   headers?: Record<string, string>;
 };
 
@@ -41,6 +41,7 @@ type KnowledgeBaseList = KnowledgeBase[];
 type MainContextType = {
   queueService: QueueService | null;
   knowledgeBaseService: KnowledgeBaseService | null;
+  chatService: ChatService | null;
 };
 
 type MyNotification = {

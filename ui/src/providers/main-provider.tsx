@@ -1,5 +1,7 @@
+/* eslint-disable react-refresh/only-export-components */
 import DialogForm from "@/components/dialog-form";
 import AuthenticationService from "@/service/AuthenticationService";
+import { ChatService } from "@/service/ChatService";
 import { KnowledgeBaseService } from "@/service/KnowledgeBaseService";
 import { QueueService } from "@/service/QueueService";
 import { useAuthStore } from "@/store/auth-store";
@@ -9,6 +11,7 @@ import { createContext, useEffect, useState } from "react";
 const initialState: MainContextType = {
   queueService: null,
   knowledgeBaseService: null,
+  chatService: null,
 };
 
 export const MainContext = createContext<MainContextType>(initialState);
@@ -17,6 +20,7 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
   const [queueService, setQueueService] = useState<QueueService>();
   const [knowledgeBaseService, setKnowledgeBaseService] =
     useState<KnowledgeBaseService>();
+  const [chatService, setChatService] = useState<ChatService>();
   const authState = useAuthStore();
 
   useEffect(() => {
@@ -64,7 +68,11 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("DEBUG: creating knowledge base service");
       setKnowledgeBaseService(new KnowledgeBaseService());
     }
-  }, [queueService, knowledgeBaseService]);
+    if (!chatService) {
+      console.log("DEBUG: creating chat service");
+      setChatService(new ChatService());
+    }
+  }, [queueService, knowledgeBaseService, chatService]);
 
   useEffect(() => {
     if (!authState.isAuthenticated || !queueService || !knowledgeBaseService)
@@ -97,6 +105,7 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
       value={{
         queueService: queueService || null,
         knowledgeBaseService: knowledgeBaseService || null,
+        chatService: chatService || null,
       }}
     >
       {children}
