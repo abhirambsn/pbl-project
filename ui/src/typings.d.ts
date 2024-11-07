@@ -1,5 +1,6 @@
 import { KnowledgeBaseService } from "./service/KnowledgeBaseService";
 import { QueueService } from "./service/QueueService";
+import { RAGBotService } from "./service/RAGBotService";
 
 type ApiRequestMetadata = {
   endpoint: string;
@@ -42,6 +43,8 @@ type MainContextType = {
   queueService: QueueService | null;
   knowledgeBaseService: KnowledgeBaseService | null;
   chatService: ChatService | null;
+  ragBotService: RAGBotService | null;
+  fetchChatMessages: (chat_id: string | undefined) => Promise<MessageList>;
 };
 
 type MyNotification = {
@@ -53,8 +56,20 @@ type MyNotification = {
 
 type ChatMetadata = {
   id: string;
-  title: string;
+  name: string;
+  knowledgeBaseId: string;
 };
+
+type Chat = {
+  _id: string;
+  chat_name: string;
+  createdBy: string;
+  knowledgeBaseId: string;
+  createdOn: Date | null;
+  version: number;
+}
+
+type ChatList = Chat[];
 
 type Message = {
   _id: string;
@@ -62,3 +77,5 @@ type Message = {
   senderType: string;
   createdOn: Date | null;
 };
+
+type MessageList = Message[];

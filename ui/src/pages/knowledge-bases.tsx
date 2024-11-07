@@ -33,6 +33,7 @@ const KnowledgeBasesPage = () => {
     setSubtitle("Create a new knowledge base to store your files and URLs");
     onOpen();
   };
+
   return (
     <section className="gap-3 p-3">
       <div className="flex items-center justify-between">

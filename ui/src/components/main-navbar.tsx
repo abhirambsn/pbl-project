@@ -29,7 +29,7 @@ const MainNavbar = ({ SidebarTrigger }: NavbarProps) => {
     <nav className="flex items-center p-2 gap-4 bg-sidebar">
       <SidebarTrigger />
       <div className="flex-1">
-        <h3 className="text-lg font-semibold">{currentChat?.title || "Dashboard"}</h3>
+        <h3 className="text-lg font-semibold">{currentChat?.name || "Dashboard"}</h3>
       </div>
       <Popover>
         <PopoverTrigger asChild>

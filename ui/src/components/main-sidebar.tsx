@@ -30,18 +30,19 @@ import {
 import { useTheme } from "@/hooks/use-theme";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { SIDEBAR_CHATS } from "@/utils/constants";
 import { useAuthStore } from "@/store/auth-store";
 import { useModalStore } from "@/store/modal-store";
 import CreateChatForm from "./create-chat-form";
 import ChatMenuItem from "./chat-menu-item";
 import AuthenticationService from "@/service/AuthenticationService";
+import { useChatStore } from "@/store/chat-store";
 
 const MainSidebar = () => {
   const { theme } = useTheme();
   const { userDetails, clear } = useAuthStore();
   const { onOpen, setCustomFormComponent, setSubtitle, setTitle } =
     useModalStore();
+  const { chats } = useChatStore();
   useEffect(() => {
     console.log("DEBUG: theme", theme);
   }, [theme]);
@@ -97,7 +98,7 @@ const MainSidebar = () => {
           <SidebarGroupLabel>Chats</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {SIDEBAR_CHATS.map((chat) => (
+              {chats.map((chat) => (
                 <ChatMenuItem key={chat.id} chat={chat} />
               ))}
             </SidebarMenu>

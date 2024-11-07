@@ -4,15 +4,19 @@ import AuthenticationService from "@/service/AuthenticationService";
 import { ChatService } from "@/service/ChatService";
 import { KnowledgeBaseService } from "@/service/KnowledgeBaseService";
 import { QueueService } from "@/service/QueueService";
+import { RAGBotService } from "@/service/RAGBotService";
 import { useAuthStore } from "@/store/auth-store";
+import { useChatStore } from "@/store/chat-store";
 import { useKnowledgeBaseStore } from "@/store/kb-store";
-import { MainContextType } from "@/typings";
+import { ChatMetadata, MainContextType, MessageList } from "@/typings";
 import { createContext, useEffect, useState } from "react";
 
 const initialState: MainContextType = {
   queueService: null,
   knowledgeBaseService: null,
   chatService: null,
+  ragBotService: null,
+  fetchChatMessages: async () => [],
 };
 
 export const MainContext = createContext<MainContextType>(initialState);
@@ -22,8 +26,10 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
   const [knowledgeBaseService, setKnowledgeBaseService] =
     useState<KnowledgeBaseService>();
   const [chatService, setChatService] = useState<ChatService>();
+  const [ragBotService, setRagBotService] = useState<RAGBotService>();
   const authState = useAuthStore();
   const { setKnowledgeBaseList } = useKnowledgeBaseStore();
+  const { setChats } = useChatStore();
 
   useEffect(() => {
     if (!authState.isAuthenticated) return;
@@ -74,14 +80,19 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
       console.log("DEBUG: creating chat service");
       setChatService(new ChatService());
     }
-  }, [queueService, knowledgeBaseService, chatService]);
+    if (!ragBotService) {
+      console.log("DEBUG: creating rag bot service");
+      setRagBotService(new RAGBotService());
+    }
+  }, [queueService, knowledgeBaseService, chatService, ragBotService]);
 
   useEffect(() => {
     if (
       !authState.isAuthenticated ||
       !queueService ||
       !knowledgeBaseService ||
-      !chatService
+      !chatService ||
+      !ragBotService
     )
       return;
     const interval = setInterval(() => {
@@ -91,9 +102,16 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
 
     knowledgeBaseService.token = authState.token;
     chatService.token = authState.token;
+    ragBotService.token = authState.token;
 
     return () => clearInterval(interval);
-  }, [authState, knowledgeBaseService, queueService, chatService]);
+  }, [
+    authState,
+    knowledgeBaseService,
+    queueService,
+    chatService,
+    ragBotService,
+  ]);
 
   useEffect(() => {
     if (!authState.isAuthenticated || !knowledgeBaseService) return;
@@ -112,15 +130,21 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (!authState.isAuthenticated || !chatService) return;
     chatService
-      .getAllChats("pbl-admin")
+      .getAllChats("test.user")
       .then((data) => {
         console.log("DEBUG: chats", data);
+        if (data) setChats(data as ChatMetadata[]);
       })
       .catch((err) => {
         console.error(err);
         authState.clear();
       });
-  }, [authState, chatService]);
+  }, [authState, chatService, setChats]);
+
+  const fetchChatMessages = async (chatId: string | undefined): Promise<MessageList> => {
+    if (!chatService || !authState.isAuthenticated || !chatId) return [];
+    return await chatService.getMessagesOfChat(chatId) || [];
+  }
 
   return (
     <MainContext.Provider
@@ -128,6 +152,8 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
         queueService: queueService || null,
         knowledgeBaseService: knowledgeBaseService || null,
         chatService: chatService || null,
+        ragBotService: ragBotService || null,
+        fetchChatMessages,
       }}
     >
       {children}
