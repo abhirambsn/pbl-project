@@ -81,7 +81,7 @@ export class ChatService extends BaseService {
     async getAllChats(user_id: string) {
         const metaData: ApiRequestMetadata = {
             method: 'GET',
-            endpoint: `${user_id}/chats`,
+            endpoint: `/chat/${user_id}/chats`,
             headers: {
                 'Authorization': `Bearer ${this.token}`
             }

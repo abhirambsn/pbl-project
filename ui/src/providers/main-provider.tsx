@@ -5,6 +5,7 @@ import { ChatService } from "@/service/ChatService";
 import { KnowledgeBaseService } from "@/service/KnowledgeBaseService";
 import { QueueService } from "@/service/QueueService";
 import { useAuthStore } from "@/store/auth-store";
+import { useKnowledgeBaseStore } from "@/store/kb-store";
 import { MainContextType } from "@/typings";
 import { createContext, useEffect, useState } from "react";
 
@@ -22,6 +23,7 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
     useState<KnowledgeBaseService>();
   const [chatService, setChatService] = useState<ChatService>();
   const authState = useAuthStore();
+  const { setKnowledgeBaseList } = useKnowledgeBaseStore();
 
   useEffect(() => {
     if (!authState.isAuthenticated) return;
@@ -99,17 +101,18 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
       .getKnowledgeBasesOfCurrentUser()
       .then((data) => {
         console.log("DEBUG: knowledge bases", data);
+        if (data) setKnowledgeBaseList(data);
       })
       .catch((err) => {
         console.error(err);
         authState.clear();
       });
-  }, [authState, knowledgeBaseService]);
+  }, [authState, knowledgeBaseService, setKnowledgeBaseList]);
 
   useEffect(() => {
     if (!authState.isAuthenticated || !chatService) return;
     chatService
-      .getAllChats("test_user")
+      .getAllChats("pbl-admin")
       .then((data) => {
         console.log("DEBUG: chats", data);
       })

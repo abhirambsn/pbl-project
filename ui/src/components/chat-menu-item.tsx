@@ -1,10 +1,6 @@
 import { ChatMetadata } from "@/typings";
 import { SidebarMenuButton } from "./ui/sidebar";
-import {
-  DeleteIcon,
-  MessageCircle,
-  MoreHorizontalIcon,
-} from "lucide-react";
+import { DeleteIcon, MessageCircle, MoreHorizontalIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -12,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useChatStore } from "@/store/chat-store";
 
 type Props = {
   chat: ChatMetadata;
@@ -19,6 +16,12 @@ type Props = {
 
 const ChatMenuItem = ({ chat }: Props) => {
   const navigate = useNavigate();
+  const { setCurrentChat } = useChatStore();
+
+  const navigateToChat = () => {
+    setCurrentChat(chat);
+    navigate(`/chat/${chat.id}`);
+  };
 
   const deleteChat = () => {
     console.log("DEBUG: Deleting Chat with ID", chat.id);
@@ -26,7 +29,7 @@ const ChatMenuItem = ({ chat }: Props) => {
   return (
     <SidebarMenuButton
       key={chat.id}
-      onClick={() => navigate(`/chat/${chat.id}`)}
+      onClick={navigateToChat}
       className="justify-between"
     >
       <div className="flex items-center gap-2">

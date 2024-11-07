@@ -6,15 +6,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
-import { useEffect } from "react";
 
 const DialogForm = () => {
   const { isOpen, onClose, title, subtitle, CustomFormComponent } =
     useModalStore();
-
-  useEffect(() => {
-    console.log("DEBUG: isOpen", isOpen, title, subtitle, CustomFormComponent);
-  }, [isOpen, title, subtitle, CustomFormComponent]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose} defaultOpen={isOpen} modal>

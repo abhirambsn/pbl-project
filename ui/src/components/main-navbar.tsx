@@ -8,6 +8,7 @@ import { useNotificationStore } from "@/store/notifications-store";
 import { NOTIFICATIONS } from "@/utils/constants";
 import { Separator } from "./ui/separator";
 import { Badge } from "./ui/badge";
+import { useChatStore } from "@/store/chat-store";
 
 type NavbarProps = {
   SidebarTrigger: React.FC;
@@ -16,6 +17,7 @@ type NavbarProps = {
 const MainNavbar = ({ SidebarTrigger }: NavbarProps) => {
   const { addNotification, clearNotifications, notifications } =
     useNotificationStore();
+  const { currentChat } = useChatStore();
   useEffect(() => {
     NOTIFICATIONS.map((n) => addNotification(n));
 
@@ -26,7 +28,9 @@ const MainNavbar = ({ SidebarTrigger }: NavbarProps) => {
   return (
     <nav className="flex items-center p-2 gap-4 bg-sidebar">
       <SidebarTrigger />
-      <div className="flex-1"></div>
+      <div className="flex-1">
+        <h3 className="text-lg font-semibold">{currentChat?.title || "Dashboard"}</h3>
+      </div>
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline">
