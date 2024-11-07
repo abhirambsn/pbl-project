@@ -8,7 +8,6 @@ import { ChatInput } from "@/components/chat/message-input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from "@/typings";
-import { MESSAGES } from "@/utils/constants";
 import { Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { redirect, useParams } from "react-router-dom";
@@ -16,6 +15,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CodeDisplayBlock from "@/components/chat/display-code";
 import { useAuthStore } from "@/store/auth-store";
+import { useMainProvider } from "@/hooks/use-main-provider";
 
 const ChatPage = () => {
   const params = useParams();
@@ -25,6 +25,7 @@ const ChatPage = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const { chatService, fetchChatMessages } = useMainProvider();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -42,13 +43,6 @@ const ChatPage = () => {
       return;
     }
 
-    console.log("DEBUG: Chat ID", params.chatId, "Loading Messages");
-    setIsLoading(true);
-    setTimeout(() => {
-      setMessages(MESSAGES);
-      setIsLoading(false);
-    }, 2000);
-
     return () => {
       console.log("DEBUG: Cleaning up Chat Page");
       setMessages([]);
@@ -57,6 +51,16 @@ const ChatPage = () => {
       setIsLoading(false);
     };
   }, [params, toast]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    (async () => {
+      const messages = await fetchChatMessages(params.chatId);
+      console.log("DEBUG: Fetched Messages", messages);
+      setMessages(messages);
+      setIsLoading(false);
+    })();
+  }, [fetchChatMessages, params.chatId]);
 
   const messagesRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -69,12 +73,13 @@ const ChatPage = () => {
       ...prevMessages,
       {
         message: input,
-        _id: "alfa" + Math.random().toString(),
+        _id: "dummy_" + Math.random().toString(),
         createdOn: null,
         senderType: "USER",
       },
     ]);
     setInput("");
+    chatService?.createMessage(params.chatId, input);
     await dispatchResponse(input);
   };
 

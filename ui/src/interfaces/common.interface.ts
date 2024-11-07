@@ -1,4 +1,9 @@
-import { MyNotification, UserDetails } from "@/typings";
+import {
+  ChatMetadata,
+  KnowledgeBaseList,
+  MyNotification,
+  UserDetails,
+} from "@/typings";
 import React from "react";
 
 export interface AuthState {
@@ -32,4 +37,24 @@ export interface ModalFormState {
   setCustomFormComponent: (component: React.FC) => void;
   setTitle: (title: string) => void;
   setSubtitle: (subtitle: string) => void;
+}
+
+export interface ChatState {
+  chats: ChatMetadata[];
+  currentChat: ChatMetadata | null;
+  setCurrentChat: (chat: ChatMetadata) => void;
+  setChats: (chats: ChatMetadata[]) => void;
+  clearState: () => void;
+}
+
+export interface KnowledgeBaseState {
+  knowledgeBaseList: KnowledgeBaseList;
+  currentPage: number;
+  totalPages: number;
+  entriesPerPage: number;
+  setKnowledgeBaseList: (knowledgeBaseList: KnowledgeBaseList) => void;
+  setCurrentPage: (currentPage: number) => void;
+  setTotalPages: (totalPages: number) => void;
+  setEntriesPerPage: (entriesPerPage: number) => void;
+  clearState: () => void;
 }

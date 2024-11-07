@@ -4,6 +4,7 @@ import {
   DeleteIcon,
   MessageCircle,
   MoreHorizontalIcon,
+  RefreshCcwIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -12,6 +13,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useChatStore } from "@/store/chat-store";
+import { useMainProvider } from "@/hooks/use-main-provider";
+import { useToast } from "@/hooks/use-toast";
 
 type Props = {
   chat: ChatMetadata;
@@ -19,19 +23,45 @@ type Props = {
 
 const ChatMenuItem = ({ chat }: Props) => {
   const navigate = useNavigate();
+  const { setCurrentChat } = useChatStore();
+  const { ragBotService } = useMainProvider();
+  const { toast } = useToast();
+
+  const navigateToChat = () => {
+    setCurrentChat(chat);
+    navigate(`/chat/${chat.id}`);
+  };
 
   const deleteChat = () => {
     console.log("DEBUG: Deleting Chat with ID", chat.id);
   };
+
+  const refreshContext = async () => {
+    console.log(
+      "DEBUG: Refreshing context for chat",
+      chat.id,
+      chat.knowledgeBaseId
+    );
+    const response = await ragBotService?.triggerStore(
+      chat.id,
+      chat.knowledgeBaseId
+    );
+    if (response) {
+      toast({
+        title: response.message,
+        description: "Refresh is in progress, you will be notified once done",
+      });
+    }
+  };
   return (
     <SidebarMenuButton
       key={chat.id}
-      onClick={() => navigate(`/chat/${chat.id}`)}
+      onClick={navigateToChat}
       className="justify-between"
     >
       <div className="flex items-center gap-2">
         <MessageCircle size={18} />
-        <span>{chat.title}</span>
+        <span>{chat.name}</span>
       </div>
 
       <DropdownMenu>
@@ -39,7 +69,11 @@ const ChatMenuItem = ({ chat }: Props) => {
           <MoreHorizontalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => deleteChat()}>
+          <DropdownMenuItem onClick={refreshContext}>
+            <RefreshCcwIcon />
+            <span>Refresh Context</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={deleteChat}>
             <DeleteIcon className="text-red-500" />
             <span>Delete</span>
           </DropdownMenuItem>

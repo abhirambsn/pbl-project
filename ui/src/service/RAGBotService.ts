@@ -29,4 +29,29 @@ export class RAGBotService extends BaseService {
             console.error('DEBUG: error querying RAGBot', err);
         }
     }
+
+    async triggerStore(chat_id: string, kb_id: string) {
+        const metaData: ApiRequestMetadata = {
+            method: 'POST',
+            endpoint: `/rag/${kb_id}/store`,
+            headers: {
+                'Authorization': `Bearer ${this.token}`,
+                'Content-Type': 'application/json'
+            },
+            data: {
+                chat_id
+            }
+        }
+
+        try {
+            const response = await this.endpointService.sendRequest<{message: string;}>(metaData);
+            if (!response) {
+                console.error('DEBUG: no response from server');
+                return;
+            }
+            return response.body;
+        } catch (err) {
+            console.error('DEBUG: error storing RAGBot', err);
+        }
+    }
 }
