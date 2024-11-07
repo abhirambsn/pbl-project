@@ -16,6 +16,7 @@ import remarkGfm from "remark-gfm";
 import CodeDisplayBlock from "@/components/chat/display-code";
 import { useAuthStore } from "@/store/auth-store";
 import { useMainProvider } from "@/hooks/use-main-provider";
+import { useChatStore } from "@/store/chat-store";
 
 const ChatPage = () => {
   const params = useParams();
@@ -26,10 +27,19 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const { chatService, fetchChatMessages } = useMainProvider();
+  const {setCurrentChat, chats} = useChatStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
   };
+
+  useEffect(() => {
+    if (!params?.chatId) return;
+    const chat = chats.find((chat) => chat.id === params.chatId);
+    if (chat) {
+      setCurrentChat(chat);
+    }
+  }, [chats, params.chatId, setCurrentChat]);
 
   useEffect(() => {
     if (!params?.chatId) {
@@ -85,18 +95,21 @@ const ChatPage = () => {
 
   const dispatchResponse = async (msg: string) => {
     console.log("DEBUG: fetching response from model of query", msg);
-    setTimeout(() => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          message: "Sample Response " + Math.random(),
-          _id: "beta" + Math.random().toString(),
-          createdOn: null,
-          senderType: "BOT",
-        },
-      ]);
-      setIsGenerating(false);
-    }, 5000);
+    // Call bot service to get response
+    const botResponse = "Sample Response " + Math.random();
+    // Save chat message
+
+    await chatService?.createMessage(params.chatId, botResponse, true);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        message: botResponse,
+        _id: "system_response" + Math.random().toString(),
+        createdOn: new Date(),
+        senderType: "system",
+      },
+    ]);
+    setIsGenerating(false);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

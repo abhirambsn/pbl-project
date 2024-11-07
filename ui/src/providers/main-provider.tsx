@@ -29,7 +29,7 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
   const [ragBotService, setRagBotService] = useState<RAGBotService>();
   const authState = useAuthStore();
   const { setKnowledgeBaseList } = useKnowledgeBaseStore();
-  const { setChats } = useChatStore();
+  const { setChats, currentChat } = useChatStore();
 
   useEffect(() => {
     if (!authState.isAuthenticated) return;
@@ -95,16 +95,10 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
       !ragBotService
     )
       return;
-    const interval = setInterval(() => {
-      console.log("DEBUG: polling for messages");
-      queueService.recieveMessage();
-    }, 30000);
 
     knowledgeBaseService.token = authState.token;
     chatService.token = authState.token;
     ragBotService.token = authState.token;
-
-    return () => clearInterval(interval);
   }, [
     authState,
     knowledgeBaseService,
@@ -112,6 +106,18 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
     chatService,
     ragBotService,
   ]);
+
+  useEffect(() => {
+    if (!authState.isAuthenticated || !queueService || !currentChat) return;
+
+    console.log("DEBUG: starting poll for messages of chat", currentChat.id);
+    const interval = setInterval(() => {
+      console.log("DEBUG: polling for messages of chat", currentChat.id);
+      queueService.recieveMessage(currentChat.id);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [authState, queueService, currentChat])
 
   useEffect(() => {
     if (!authState.isAuthenticated || !knowledgeBaseService) return;

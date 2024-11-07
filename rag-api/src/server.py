@@ -11,7 +11,7 @@ tracemalloc.start()
 err_logger = Logger("rag-api", file_path=".logs/rag-error.log")
 
 config = Config()
-config.bind = ["0.0.0.0:8000"]
+config.bind = ["0.0.0.0:8001"]
 config.logger_class = HypercornLoggerAdapter
 
 instrumentator = Instrumentator()

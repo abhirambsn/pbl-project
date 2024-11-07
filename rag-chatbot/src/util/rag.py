@@ -104,10 +104,10 @@ class RetrievalAugmentedGenerator:
                 await websocket.send_json(resp.to_json())
             end = time.time()
             duration = round(end - start, 2)
-            query_response = QueryResponse.make_response(request.id, answer=None, duration=duration, message="Done", done=True)
+            query_response = QueryResponse.make_response(request.id, answer=None, duration=duration, message="Done", done=True, chat_id=request.chat_id)
             await websocket.send_json(query_response.to_json())
         except Exception as e:
-            await websocket.send_json({"id": request.id, "message": f"Error: {e}"})
+            await websocket.send_json({"id": request.id, "message": f"Error: {e}", "chat_id": request.chat_id, "type": "QUERY_RESULT"})
 
     async def store_to_vector_store(self, request: Query):
         try:

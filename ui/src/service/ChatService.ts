@@ -61,9 +61,9 @@ export class ChatService extends BaseService {
     }
   }
 
-  async createMessage(chat_id: string, message: string) {
+  async createMessage(chat_id: string, message: string, isBot: boolean = false) {
     const body = {
-      senderType: "user",
+      senderType: !isBot ? "user" : "system",
       message,
     };
 
