@@ -63,4 +63,8 @@ public class ChatService {
         String collectionName = "chat_" + chat_id;
         return mongoTemplate.findAll(ChatMessage.class, collectionName);
     }
+
+    public List<ChatMetadata> getAllChats(String user_id) {
+        return chatMetadataRepository.findAllByCreatedBy(user_id);
+    }
 }
