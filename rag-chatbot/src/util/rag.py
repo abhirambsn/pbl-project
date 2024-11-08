@@ -61,7 +61,12 @@ class RetrievalAugmentedGenerator:
         if dev:
             return []
         response = requests.get(f"{os.getenv('CHAT_SERVICE_URL')}/chat/{chat_id}")
-        return response.json()
+        json_data = response.json()
+        messages = json_data.get('body', [])
+        chat_history = []
+        for message in messages:
+            chat_history.append(message.get('message'))
+        return chat_history
     
     async def get_conversational_rag_chain(self, retriever_chain): 
         
@@ -85,7 +90,7 @@ class RetrievalAugmentedGenerator:
             conversation_rag_chain = await self.get_conversational_rag_chain(retriever_chain)
             if (request.chat_id is not None):
                 print(f"Fetching chat history for chat_id {request.chat_id}")
-                chat_history = await self.get_chat_history(request.chat_id)
+                chat_history = await self.get_chat_history(request.chat_id, False)
             else:
                 chat_history = []
 

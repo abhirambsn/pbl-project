@@ -30,6 +30,19 @@ export class QueueService {
         console.log("DEBUG: parsed body", body);
         result.push(body);
         if (body.chat_id === chat_id) {
+          if (body.type === "QUERY_RESULT") {
+            const event = new CustomEvent("new-message-bot", {detail: {chat_id, body}});
+            const invoked = document.dispatchEvent(event)
+            if (!invoked) {
+              console.error("DEBUG: new message event not invoked");
+            }
+          } else {
+            const event = new CustomEvent("new-notification", {detail: {chat_id, body}});
+            const invoked = document.dispatchEvent(event)
+            if (!invoked) {
+              console.error("DEBUG: new notification event not invoked");
+            }
+          }
           this.sqsClient.send(
             new DeleteMessageCommand({
               QueueUrl: this.queueUrl,

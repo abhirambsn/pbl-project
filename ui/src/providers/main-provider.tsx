@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import DialogForm from "@/components/dialog-form";
+import { useToast } from "@/hooks/use-toast";
 import AuthenticationService from "@/service/AuthenticationService";
 import { ChatService } from "@/service/ChatService";
 import { KnowledgeBaseService } from "@/service/KnowledgeBaseService";
@@ -8,8 +9,9 @@ import { RAGBotService } from "@/service/RAGBotService";
 import { useAuthStore } from "@/store/auth-store";
 import { useChatStore } from "@/store/chat-store";
 import { useKnowledgeBaseStore } from "@/store/kb-store";
+import { useNotificationStore } from "@/store/notifications-store";
 import { ChatMetadata, MainContextType, MessageList } from "@/typings";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
 const initialState: MainContextType = {
   queueService: null,
@@ -30,6 +32,8 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
   const authState = useAuthStore();
   const { setKnowledgeBaseList } = useKnowledgeBaseStore();
   const { setChats, currentChat } = useChatStore();
+  const { addNotification } = useNotificationStore();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!authState.isAuthenticated) return;
@@ -117,7 +121,7 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
     }, 30000);
 
     return () => clearInterval(interval);
-  }, [authState, queueService, currentChat])
+  }, [authState, queueService, currentChat]);
 
   useEffect(() => {
     if (!authState.isAuthenticated || !knowledgeBaseService) return;
@@ -135,8 +139,9 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!authState.isAuthenticated || !chatService) return;
+    console.log("DEBUG: authState -> UserDetails", authState.userDetails);
     chatService
-      .getAllChats("test.user")
+      .getAllChats(authState.userDetails?.id || "")
       .then((data) => {
         console.log("DEBUG: chats", data);
         if (data) setChats(data as ChatMetadata[]);
@@ -147,10 +152,48 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
       });
   }, [authState, chatService, setChats]);
 
-  const fetchChatMessages = async (chatId: string | undefined): Promise<MessageList> => {
+  const handleNotificationRecieve = useCallback(
+    (event: CustomEvent) => {
+      console.log("DEBUG: new notification event", event.detail);
+      const { body } = event.detail;
+      addNotification({
+        message: body.message,
+        read: false,
+        timestamp: Date.now(),
+        id: "notification" + Math.random().toString(),
+        type: "success",
+      });
+      toast({
+        title: "Documents Stored",
+        description: body.message,
+      });
+    },
+    [addNotification, toast]
+  );
+
+  useEffect(() => {
+    if (!authState.isAuthenticated) return;
+    console.log("DEBUG: Adding Notification Event Listener");
+    window.addEventListener(
+      "new-notification",
+      handleNotificationRecieve as EventListener
+    );
+
+    return () => {
+      console.log("DEBUG: Removing Event Listener");
+      window.removeEventListener(
+        "new-notification",
+        handleNotificationRecieve as EventListener
+      );
+    };
+  }, [handleNotificationRecieve, authState]);
+
+  const fetchChatMessages = async (
+    chatId: string | undefined
+  ): Promise<MessageList> => {
     if (!chatService || !authState.isAuthenticated || !chatId) return [];
-    return await chatService.getMessagesOfChat(chatId) || [];
-  }
+    return (await chatService.getMessagesOfChat(chatId)) || [];
+  };
 
   return (
     <MainContext.Provider

@@ -40,8 +40,8 @@ export class ChatService extends BaseService {
     };
 
     const metaData: ApiRequestMetadata = {
-      method: "PUT",
-      endpoint: "/chat",
+      method: "POST",
+      endpoint: "/chat/",
       headers: {
         Authorization: `Bearer ${this.token}`,
         "Content-Type": "application/json",
