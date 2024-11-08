@@ -26,10 +26,13 @@ import {
 } from "./ui/command";
 import { ChevronsUpDown, Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { KB_LIST } from "@/utils/constants";
 import { useMainProvider } from "@/hooks/use-main-provider";
+import { useToast } from "@/hooks/use-toast";
+import { useKnowledgeBaseStore } from "@/store/kb-store";
+import { useAuthStore } from "@/store/auth-store";
 
 const CreateChatForm = () => {
+  const { toast } = useToast();
   const formSchema = z.object({
     name: z.string({ required_error: "Please enter a name" }),
     kb: z.string({ required_error: "Please choose a knowledge base" }),
@@ -43,14 +46,31 @@ const CreateChatForm = () => {
     },
   });
 
+  const authState = useAuthStore();
+
   const { chatService, ragBotService } = useMainProvider();
+  const { knowledgeBaseList } = useKnowledgeBaseStore();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log("DEBUG: form data", data);
-    const chatId = await chatService?.createChat(data.name, data.kb);
+    if (!authState.userDetails) {
+      console.log("DEBUG: User not found");
+      return;
+    }
+    const chatId = await chatService?.createChat(
+      data.kb,
+      authState.userDetails?.id,
+      data.name
+    );
     if (chatId) {
       console.log("DEBUG: chat created", chatId);
-      await ragBotService?.triggerStore(chatId, data.kb);
+      const response = await ragBotService?.triggerStore(chatId, data.kb);
+      if (response) {
+        toast({
+          title: "Chat Created",
+          description: response.message,
+        });
+      }
     }
   };
 
@@ -89,7 +109,8 @@ const CreateChatForm = () => {
                       )}
                     >
                       {field.value
-                        ? KB_LIST.find((kb) => kb.id === field.value)?.name
+                        ? knowledgeBaseList.find((kb) => kb.id === field.value)
+                            ?.name
                         : "Select Knowledge Base"}
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -101,7 +122,7 @@ const CreateChatForm = () => {
                     <CommandList>
                       <CommandEmpty>No Knowledge Base found.</CommandEmpty>
                       <CommandGroup>
-                        {KB_LIST.map((kb) => (
+                        {knowledgeBaseList.map((kb) => (
                           <CommandItem
                             value={kb.name}
                             key={kb.id}

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from "@/typings";
 import { Send } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { redirect, useParams } from "react-router-dom";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -26,12 +26,29 @@ const ChatPage = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const { chatService, fetchChatMessages } = useMainProvider();
-  const {setCurrentChat, chats} = useChatStore();
+  const { chatService, fetchChatMessages, ragBotService } = useMainProvider();
+  const {setCurrentChat, chats, currentChat} = useChatStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
   };
+
+  const handleBotResponse = useCallback((event: CustomEvent) => {
+    console.log("DEBUG: new message event", event.detail);
+    const { chat_id, body } = event.detail;
+    if (chat_id !== params.chatId) return;
+    chatService?.createMessage(params.chatId, body.message, true);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        message: body.message,
+        _id: "system_response" + Math.random().toString(),
+        createdOn: new Date(),
+        senderType: "system",
+      },
+    ]);
+    setIsGenerating(false);
+  }, [chatService, params.chatId]);
 
   useEffect(() => {
     if (!params?.chatId) return;
@@ -61,6 +78,17 @@ const ChatPage = () => {
       setIsLoading(false);
     };
   }, [params, toast]);
+
+  useEffect(() => {
+    if (!chatService) return;
+    console.log("DEBUG: Adding Event Listener");
+    document.addEventListener("new-message-bot", handleBotResponse as EventListener);
+
+    return () => {
+      console.log("DEBUG: Removing Event Listener");
+      window.removeEventListener("new-message-bot", handleBotResponse as EventListener);
+    };
+  }, [chatService, params.chatId, handleBotResponse]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -94,22 +122,14 @@ const ChatPage = () => {
   };
 
   const dispatchResponse = async (msg: string) => {
+    setIsGenerating(true);
     console.log("DEBUG: fetching response from model of query", msg);
     // Call bot service to get response
-    const botResponse = "Sample Response " + Math.random();
-    // Save chat message
-
-    await chatService?.createMessage(params.chatId, botResponse, true);
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        message: botResponse,
-        _id: "system_response" + Math.random().toString(),
-        createdOn: new Date(),
-        senderType: "system",
-      },
-    ]);
-    setIsGenerating(false);
+    if (!params.chatId || !currentChat?.knowledgeBaseId) {
+      console.log("DEBUG: chatId or knowledgeBaseId not found");
+      return;
+    }
+    await ragBotService?.queryRAGBot(params.chatId, currentChat?.knowledgeBaseId, msg);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {

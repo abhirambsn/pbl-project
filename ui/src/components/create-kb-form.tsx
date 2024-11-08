@@ -21,6 +21,9 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import { useMainProvider } from "@/hooks/use-main-provider";
+import { useAuthStore } from "@/store/auth-store";
+import { useToast } from "@/hooks/use-toast";
 
 const CreateKBForm = () => {
   const formSchema = z.object({
@@ -31,10 +34,28 @@ const CreateKBForm = () => {
   });
 
   const [url, setUrl] = useState<string>("");
+  const { knowledgeBaseService } = useMainProvider();
+  const authState = useAuthStore();
+  const { toast } = useToast();
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    if (!authState.userDetails) {
+      console.log("DEBUG: User not found");
+      return;
+    }
     const payload = { ...data, files: [] };
     console.log("DEBUG: form data", payload);
+    const response = await knowledgeBaseService?.createKnowledgeBase(
+      payload.name,
+      payload.urls,
+      authState.userDetails?.id as string
+    );
+    if (response) {
+      console.log("DEBUG: KB created", response);
+      toast({
+        title: "Knowledge Base Created",
+      });
+    }
   };
 
   const form = useForm<z.infer<typeof formSchema>>({

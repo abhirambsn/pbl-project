@@ -1,7 +1,7 @@
 import {
+  AppNotification,
   ChatMetadata,
   KnowledgeBaseList,
-  MyNotification,
   UserDetails,
 } from "@/typings";
 import React from "react";
@@ -20,9 +20,9 @@ export interface AuthState {
 }
 
 export interface NotificationState {
-  notifications: MyNotification[];
-  setNotifications: (notifications: MyNotification[]) => void;
-  addNotification: (notification: MyNotification) => void;
+  notifications: AppNotification[];
+  setNotifications: (notifications: AppNotification[]) => void;
+  addNotification: (notification: AppNotification) => void;
   removeNotification: (id: string) => void;
   clearNotifications: () => void;
 }

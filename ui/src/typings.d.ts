@@ -67,7 +67,7 @@ type Chat = {
   knowledgeBaseId: string;
   createdOn: Date | null;
   version: number;
-}
+};
 
 type ChatList = Chat[];
 
@@ -79,3 +79,11 @@ type Message = {
 };
 
 type MessageList = Message[];
+
+type AppNotification = {
+  id: string;
+  message: string;
+  type: "success" | "error" | "info";
+  read: boolean;
+  timestamp: number;
+};
