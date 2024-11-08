@@ -27,6 +27,7 @@ import {
 import { ChevronsUpDown, Check, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { KB_LIST } from "@/utils/constants";
+import { useMainProvider } from "@/hooks/use-main-provider";
 
 const CreateChatForm = () => {
   const formSchema = z.object({
@@ -42,8 +43,15 @@ const CreateChatForm = () => {
     },
   });
 
+  const { chatService, ragBotService } = useMainProvider();
+
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     console.log("DEBUG: form data", data);
+    const chatId = await chatService?.createChat(data.name, data.kb);
+    if (chatId) {
+      console.log("DEBUG: chat created", chatId);
+      await ragBotService?.triggerStore(chatId, data.kb);
+    }
   };
 
   return (

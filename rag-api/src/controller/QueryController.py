@@ -18,9 +18,9 @@ async def store_context_bot(kb_id: str, request: StoreRequest, knowledgeBaseRepo
     
     urls = knowledgeBase.urls
     print(f"Sending store request for urls: {urls}")
-    bot_client.send_request(QueryType.store, request.chat_id, urls)
+    request_id = bot_client.send_request(QueryType.store, request.chat_id, urls)
 
-    return {"message": "Store Request Sent"}
+    return {"message": "Store Request Sent", "request_id": request_id}
 
 @router.post("/{kb_id}/query")
 async def query_bot(kb_id: str, request: QueryRequest, knowledgeBaseRepository: Annotated[KnowledgeBaseRepository, Depends(get_kb_repo)], bot_client: Annotated[BotWebSocketClient, Depends(get_bot_client)]):
@@ -30,6 +30,6 @@ async def query_bot(kb_id: str, request: QueryRequest, knowledgeBaseRepository: 
     
     query = request.query
     print(f"Sending query request for query: {query}")
-    bot_client.send_request(QueryType.query, request.chat_id, query=query)
+    request_id = bot_client.send_request(QueryType.query, request.chat_id, query=query)
 
-    return {"message": "Query Request Sent"}
+    return {"message": "Query Request Sent", "request_id": request_id}
