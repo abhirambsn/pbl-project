@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 
 @Document
 @Builder
@@ -23,7 +23,7 @@ public class ChatMetadata {
     private String knowledgeBaseId;
 
     @CreatedDate
-    private OffsetDateTime createdOn;
+    private Date createdOn;
 
     @Version
     private Integer version;
