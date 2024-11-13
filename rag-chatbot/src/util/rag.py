@@ -57,7 +57,7 @@ class RetrievalAugmentedGenerator:
         
         return retriever_chain
     
-    async def get_chat_history(chat_id: str, dev: bool = True):
+    async def get_chat_history(self, chat_id: str, dev: bool = True):
         if dev:
             return []
         response = requests.get(f"{os.getenv('CHAT_SERVICE_URL')}/chat/{chat_id}")
