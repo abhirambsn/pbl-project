@@ -2,12 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: api-gateway-ingress
-  annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
-    traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
+  ingressClassName: nginx
   rules:
-  - host: api.localhost.localstack.cloud
+  - host: api.convobot.cloud
     http:
       paths:
       - path: /
@@ -23,16 +21,17 @@ kind: Ingress
 metadata:
   name: keycloak-ingress
   annotations:
-    ingress.kubernetes.io/ssl-redirect: "false"
-    traefik.ingress.kubernetes.io/router.entrypoints: web,websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
 spec:
+  ingressClassName: nginx
   tls:
-    - hosts:
-      - keycloak.localhost.localstack.cloud
-      secretName: ls-secret-tls
+  - hosts:
+      - keycloak.convobot.cloud
+    secretName: keycloak-cert
   rules:
-  - host: keycloak.localhost.localstack.cloud
+  - host: keycloak.convobot.cloud
     http:
       paths:
       - path: /
