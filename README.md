@@ -17,3 +17,7 @@
 [![CodeQL Advanced](https://github.com/abhirambsn/pbl-project/actions/workflows/codeql.yml/badge.svg)](https://github.com/abhirambsn/pbl-project/actions/workflows/codeql.yml)
 
 
+
+### Local Setup
+
+See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions.

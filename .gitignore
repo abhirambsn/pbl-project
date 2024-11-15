@@ -19,3 +19,10 @@ elk-stack/
 
 **/.*.env
 jenkins-ci/
+
+keycloak-cert.crt
+keycloak-kf.key
+rootCA.key
+rootCA.crt
+
+.DS_Store
