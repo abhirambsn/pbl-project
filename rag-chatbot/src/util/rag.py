@@ -79,8 +79,6 @@ class RetrievalAugmentedGenerator:
             ("user", "{input}"),
         ])
         
-        print("Prompt:", prompt)
-        
         stuff_documents_chain = create_stuff_documents_chain(llm,prompt)
         
         return create_retrieval_chain(retriever_chain, stuff_documents_chain)
