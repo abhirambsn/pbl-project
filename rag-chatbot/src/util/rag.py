@@ -60,12 +60,13 @@ class RetrievalAugmentedGenerator:
     async def get_chat_history(self, chat_id: str, dev: bool = True):
         if dev:
             return []
-        response = requests.get(f"{os.getenv('CHAT_SERVICE_URL')}/chat/{chat_id}")
+        response = requests.get(f"{os.getenv('CHAT_SERVICE_URL')}/chat?chatId={chat_id}")
         json_data = response.json()
         messages = json_data.get('body', [])
         chat_history = []
         for message in messages:
-            chat_history.append(message.get('message'))
+            msg = f"[{message.get('senderType')}]: {message.get('message')}"
+            chat_history.append(msg)
         return chat_history
     
     async def get_conversational_rag_chain(self, retriever_chain): 
