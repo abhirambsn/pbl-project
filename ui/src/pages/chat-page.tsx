@@ -103,6 +103,12 @@ const ChatPage = () => {
   const messagesRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
+  useEffect(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+    }
+  }, [messages]);
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("DEBUG: Submitting Form");
@@ -197,7 +203,7 @@ const ChatPage = () => {
         )}
       </ChatMessageList>
 
-      <div className="p-3">
+      <div className="p-3 fixed bottom-0 z-50">
         <form ref={formRef} className="flex relative gap-2" onSubmit={onSubmit}>
           <ChatInput
             value={input}

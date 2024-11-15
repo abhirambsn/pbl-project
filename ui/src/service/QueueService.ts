@@ -12,7 +12,7 @@ export class QueueService {
   constructor() {
     this.queueUrl = import.meta.env.VITE_SQS_URL || "";
     this.sqsClient = new SQSClient({
-      endpoint: "http://localhost.localstack.cloud:4566",
+      endpoint: "http://queue.aws.convobot.cloud",
       region: "us-east-1",
       credentials: {
         accessKeyId: "test",
