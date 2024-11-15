@@ -1,5 +1,10 @@
 # Installation Guide
 
+## Pre-requisites
+
+1. **Docker Desktop installed**
+2. **Default Kubernetes Cluster Enabled (with kubectl installed)**
+
 Follow the steps below to set up the project:
 
 1. **Run setup-ghcr-secret.sh**
