@@ -41,6 +41,10 @@ spec:
                 key: eureka-server
           - name: BOT_SOCKET_URL
             value: "ws://rag-chatbot:8000/ws"
+          - name: SQS_QUEUE_URL
+            value: "http://queue:4100/100010001000/query-results"
+          - name: AWS_ENDPOINT_URL
+            value: "http://queue:4100"
         ports:
         - containerPort: 8000
         volumeMounts:

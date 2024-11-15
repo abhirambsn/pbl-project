@@ -60,13 +60,13 @@ class RetrievalAugmentedGenerator:
     async def get_chat_history(self, chat_id: str, dev: bool = True):
         if dev:
             return []
-        response = requests.get(f"{os.getenv('CHAT_SERVICE_URL')}/chat?chatId={chat_id}")
+        response = requests.get(f"{os.getenv('CHAT_SERVICE_URL')}/chat?chatId={chat_id}", headers={"Authorization": f"Bearer {os.getenv('CHAT_SERVICE_TOKEN')}"})
         json_data = response.json()
         messages = json_data.get('body', [])
         chat_history = []
         for message in messages:
             msg = f"[{message.get('senderType')}]: {message.get('message')}"
-            chat_history.append(msg)
+            chat_history.append(msg.strip('\n'))
         return chat_history
     
     async def get_conversational_rag_chain(self, retriever_chain): 
@@ -74,7 +74,7 @@ class RetrievalAugmentedGenerator:
         llm = ChatGoogleGenerativeAI(model='gemini-1.5-flash')
         
         prompt = ChatPromptTemplate.from_messages([
-            ("system", "Answer the user's questions based on the below context:\n\n{context}"),
+            ("system", "Answer the user's questions based on the below context and the chat history:\n\nContext:\n\n{context}\n\nChat History:\n\n"),
             MessagesPlaceholder(variable_name="chat_history"),
             ("user", "{input}"),
         ])
@@ -95,7 +95,7 @@ class RetrievalAugmentedGenerator:
             else:
                 chat_history = []
 
-
+            print(f"Using Chat History: {chat_history}")
             print("Querying Model for answer")
 
             ctr = 0

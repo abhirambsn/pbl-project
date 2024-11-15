@@ -149,3 +149,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .chat-container {
+    overflow-anchor: none;
+  }
+}

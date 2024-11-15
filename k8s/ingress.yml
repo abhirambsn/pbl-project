@@ -28,7 +28,7 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-      - keycloak.convobot.cloud
+      - keycloak.convobot.ai
     secretName: keycloak-cert
   rules:
   - host: keycloak.convobot.cloud
@@ -41,3 +41,26 @@ spec:
             name: keycloak
             port:
               number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: queue-service-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-amz-content-sha256,x-amz-user-agent,amz-sdk-request,x-amz-target,x-amz-date,amz-sdk-invocation-id"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: queue.aws.convobot.cloud
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: queue
+            port:
+              number: 4100

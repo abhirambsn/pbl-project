@@ -30,6 +30,10 @@ spec:
                 key: google-api-key
           - name: CHAT_SERVICE_URL
             value: "http://chat-api:8080"
+          - name: SQS_QUEUE_URL
+            value: "http://queue:4100/100010001000/query-results"
+          - name: AWS_ENDPOINT_URL
+            value: "http://queue:4100"
         ports:
         - containerPort: 8000
 ---

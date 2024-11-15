@@ -118,7 +118,7 @@ export const MainProvider = ({ children }: { children: React.ReactNode }) => {
     const interval = setInterval(() => {
       console.log("DEBUG: polling for messages of chat", currentChat.id);
       queueService.recieveMessage(currentChat.id);
-    }, 30000);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [authState, queueService, currentChat]);
