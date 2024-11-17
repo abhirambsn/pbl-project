@@ -64,13 +64,13 @@ const MainSidebar = () => {
               <MessageCircleMoreIcon
                 size={24}
                 className={
-                  theme === "light" ? "text-teal-800" : "text-teal-500"
+                  theme === "light" ? "text-blue-400" : "text-blue-400"
                 }
               />
               <span
                 className={cn(
                   "text-lg tracking-wide",
-                  theme === "light" ? "text-teal-800" : "text-teal-500"
+                  theme === "light" ? "text-blue-400" : "text-blue-400"
                 )}
               >
                 ConvoBot
