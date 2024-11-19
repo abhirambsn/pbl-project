@@ -15,12 +15,12 @@ const DashboardPage = () => {
       <div className="flex items-center gap-2">
         <MessageCircleMoreIcon
           size={64}
-          className={theme === "light" ? "text-teal-800" : "text-teal-500"}
+          className={theme === "light" ? "text-blue-400" : "text-blue-400"}
         />
         <span
           className={cn(
             "text-5xl tracking-wide",
-            theme === "light" ? "text-teal-800" : "text-teal-500"
+            theme === "light" ? "text-blue-400" : "text-blue-400"
           )}
         >
           ConvoBot

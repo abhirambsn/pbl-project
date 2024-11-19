@@ -203,17 +203,17 @@ const ChatPage = () => {
         )}
       </ChatMessageList>
 
-      <div className="p-3 fixed bottom-0 z-50">
-        <form ref={formRef} className="flex relative gap-2" onSubmit={onSubmit}>
+      <div className="p-3 z-50 w-full bg-background">
+        <form ref={formRef} className="flex items-center gap-2" onSubmit={onSubmit}>
           <ChatInput
             value={input}
             onChange={handleInputChange}
             onKeyDown={onKeyDown}
             placeholder="Type a message..."
-            className="min-h-12 bg-background shadow-none "
+            className="min-h-12 w-full bg-background shadow-none "
           />
           <Button
-            className="absolute top-1/2 right-2 transform  -translate-y-1/2"
+            className="h-12 w-12"
             type="submit"
             size="icon"
             disabled={isLoading || isGenerating || !input}
