@@ -9,7 +9,7 @@ for SECRET_NAME in "${SECRET_NAMES[@]}"; do
     read -sp "Enter value for secret [$SECRET_NAME]: " SECRET_VALUE
     echo
 
-    kubectl create secret generic $SECRET_NAME --from-literal=$SECRET_NAME=$SECRET_VALUE
+    kubectl -n pbl create secret generic $SECRET_NAME --from-literal=$SECRET_NAME=$SECRET_VALUE
 
     echo "Secret [$SECRET_NAME] created successfully."
 done

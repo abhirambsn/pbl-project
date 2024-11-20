@@ -18,19 +18,24 @@ Follow the steps below to set up the project:
     - Google API Key
     - Supabase Postgres Database URL (ask @abhirambsn for the URL).
 
+3. **Create namespace pbl**
+    ```sh
+    kubectl create namespace pbl
+    ```
+
 3. **Run setup-cert.sh**
     ```sh
-    sh setup-cert.sh keycloak.convobot.cloud
+    ./setup-cert.sh keycloak.convobot.cloud
     ```
 
 4. **Run start-external-svc.sh**
     ```sh
-    sh start-external-svc.sh
+    ./start-external-svc.sh
     ```
 
 5. **Run start-all-svc.sh**
     ```sh
-    sh start-all-svc.sh start
+    ./start-all-svc.sh start
     ```
 
 6. **Add the rootCA.crt to your keychain and mark it as trusted**

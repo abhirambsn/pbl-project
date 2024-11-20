@@ -79,8 +79,8 @@ openssl x509 -req \
     -sha256 -extfile cert.conf
 
 # Delete secret
-kubectl delete secret keycloak-cert
-kubectl create secret tls keycloak-cert --key keycloak-kf.key --cert keycloak-cert.crt
+kubectl -n pbl delete secret keycloak-cert
+kubectl -n pbl create secret tls keycloak-cert --key keycloak-kf.key --cert keycloak-cert.crt
 
 # Clean up
 rm -f csr.conf cert.conf keycloak-cert.csr rootCA.srl
