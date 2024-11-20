@@ -2,20 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: convobot-ui-app-deployment
+  namespace: pbl
   labels:
-    app: react-app
+    app: convot-ui-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: react-app
+      app: convot-ui-app
   template:
     metadata:
       labels:
-        app: react-app
+        app: convot-ui-app
     spec:
       containers:
-      - name: react-app
+      - name: convot-ui-app
         image: pbl-ui:latest
         ports:
         - containerPort: 80
@@ -23,10 +24,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: react-app-service
+  name: convot-ui-app-service
+  namespace: pbl
 spec:
   selector:
-    app: react-app
+    app: convot-ui-app
   ports:
     - protocol: TCP
       port: 80
